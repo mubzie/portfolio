@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react'
 import styles from '@/styles/Header.module.scss'
 import { useAppTheme } from './AppThemeProvider'
-import HeaderAnimations from '@/utils/gsapAnimations/header';
+import HeaderAnimations from '@/utils/gsapAnimations/Header';
+
 
 function Header() {
     const [isDarkMode, setIsDarkMode] = useAppTheme();
@@ -42,8 +43,8 @@ function Header() {
                     setIsDarkMode(!isDarkMode);
                     animation.current?.toggleTheme(isDarkMode);
                 }}
-                className={styles.theme}>
-                <div className='lightThemeWrapper'>
+                className={`${styles.theme} hoverLinks`}>
+                <div className='lightThemeWrapper '>
                     <span className={styles.themeIcon}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                             <path

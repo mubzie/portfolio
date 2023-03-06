@@ -1,8 +1,56 @@
 @import "./base/varibale.scss";
 @import "./base/breakPoint.scss";
 
+.wrapper {
+  margin-bottom: 2em;
+  @include md {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.aside {
+  display: none;
+
+  & > a {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 10px;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+
+    .asideNavIcons {
+      position: relative;
+      left: 0;
+      opacity: 0;
+    }
+
+    h2 {
+      transform: translateX(-50px);
+    }
+
+    @include themify {
+      color: getThemeValue("text");
+    }
+  }
+
+  @include md {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // padding-top: 10em;
+    position: sticky;
+    top: 10em;
+    height: fit-content;
+  }
+}
+
 .main {
   padding: 0px 1.5em;
+  padding-top: 5em;
+  position: relative;
 
   @include md {
     padding: 0px 2em;
@@ -10,8 +58,6 @@
 }
 
 .about {
-  margin-top: 5em;
-
   h1 {
     text-transform: capitalize;
     font-size: 2rem;
@@ -37,6 +83,21 @@
 
     @include themify {
       border-color: getThemeValue("border");
+    }
+  }
+
+  & > button {
+    width: 100%;
+    height: 0px;
+    font-weight: bold;
+    display: block;
+    transform-origin: top center;
+    padding: 0;
+    cursor: pointer;
+
+    @include themify {
+      background-color: getThemeValue("bg-invert");
+      color: getThemeValue("text-invert");
     }
   }
 
@@ -70,27 +131,41 @@
       color: $primary-text;
       padding: 0;
       li {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
         list-style: none;
         border-bottom: 1px solid;
         margin-bottom: 2em;
+        cursor: pointer;
 
-        & > p {
+        a {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          text-decoration: none;
+          font-weight: lighter;
 
-          span:nth-child(2) {
-            margin-left: 1em;
-            font-size: 1.3rem;
+          &:hover {
+            transform: scale(0.9);
           }
-        }
-        & > span {
-          display: inline-block;
-          width: 15px;
-          height: 15px;
+
+          & > p {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            span:nth-child(2) {
+              margin-left: 1em;
+              font-size: 1.3rem;
+            }
+          }
+          & > span {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+          }
+
+          @include themify {
+            color: getThemeValue("text");
+          }
         }
 
         @include themify {
@@ -112,6 +187,7 @@
   }
   & > button {
     border: 3px solid;
+    font-size: 1.1rem;
     padding: 0.5em 0.8em;
     border-radius: 25px;
     text-transform: capitalize;
@@ -170,6 +246,7 @@
         width: 100%;
         height: 100%;
         z-index: -1;
+        transform: translateX(-50px);
 
         @include themify {
           background-color: getThemeValue("bg");
@@ -183,6 +260,7 @@
       }
 
       &:hover::before {
+        transform: translateX(0px);
         @include themify {
           background-color: getThemeValue("bg-invert");
         }

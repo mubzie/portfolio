@@ -19,6 +19,7 @@ $darkMode-text-invert: $lightMode-text;
 
 $primary-text: #828282;
 
+// Create a app that handle Dark and light mode
 $themes: (
   "default": (
     "bg": $darkMode-bg,
@@ -39,6 +40,10 @@ $themes: (
     "border": $lightMode-border,
   ),
 );
+
+/**
+create a mixin that loop through the theme map and create scss styles for each theme
+*/
 
 // For module css files
 @mixin themify($themes: $themes) {
@@ -75,13 +80,15 @@ $themes: (
           )
         ) !global;
       }
-      @content;
       transition: all 400ms linear;
+      @content;
       $theme-map: null !global;
     }
   }
 }
 
+// function that gets the currentt theme value
+// Note: Can only be used inside a themify or themifyGlobal Mixin
 @function getThemeValue($key) {
   @return map-get($theme-map, $key);
 }

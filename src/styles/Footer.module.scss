@@ -2,7 +2,18 @@
 @import "./base/breakPoint.scss";
 
 .wrapper {
-  padding: 1em 0;
+  padding: 0.5em 0;
+  border: 1px solid;
+
+  @include themify {
+    border-color: getThemeValue("border");
+  }
+
+  @include md {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
 }
 
 .spotify {
@@ -43,6 +54,7 @@
 
 .designCredit {
   text-align: center;
+  padding: 1em 0;
 
   a {
     text-decoration: none;
