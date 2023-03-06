@@ -1,0 +1,87 @@
+$lightMode-bg: #ffffff;
+$lightMode-text: #000000;
+$darkMode-bg: #000000;
+$darkMode-text: #dadada;
+
+$lightMode-bg-invert: $darkMode-bg;
+$lightMode-gray: #f5f5f5;
+$lightMode-bg-lighten: lighten(
+  $color: $lightMode-gray,
+  $amount: 3%,
+);
+$lightMode-text-invert: $darkMode-text;
+$lightMode-border: #f5f5f5;
+
+$darkMode-bg-invert: $lightMode-bg;
+$darkMode-bg-lighten: #121212;
+$darkMode-border: #454844;
+$darkMode-text-invert: $lightMode-text;
+
+$primary-text: #828282;
+
+$themes: (
+  "default": (
+    "bg": $darkMode-bg,
+    "bg-lighten": $darkMode-bg-lighten,
+    "bg-invert": $darkMode-bg-invert,
+    "text": $darkMode-text,
+    "text-invert": $darkMode-text-invert,
+    "text-secondary": $primary-text,
+    "border": $darkMode-border,
+  ),
+  "light": (
+    "bg": $lightMode-bg,
+    "bg-lighten": $lightMode-bg-lighten,
+    "bg-invert": $lightMode-bg-invert,
+    "text": $lightMode-text,
+    "text-invert": $lightMode-text-invert,
+    "text-secondary": $primary-text,
+    "border": $lightMode-border,
+  ),
+);
+
+// For module css files
+@mixin themify($themes: $themes) {
+  @each $theme, $map in $themes {
+    :global(.theme-#{$theme}) & {
+      $theme-map: () !global;
+      @each $key, $submap in $map {
+        $value: map-get(map-get($themes, $theme), "#{$key}");
+        $theme-map: map-merge(
+          $theme-map,
+          (
+            $key: $value,
+          )
+        ) !global;
+      }
+      @content;
+      transition: all 400ms linear;
+      $theme-map: null !global;
+    }
+  }
+}
+
+//  for Global file, thats not using module
+@mixin themifyGlobal($themes: $themes) {
+  @each $theme, $map in $themes {
+    .theme-#{$theme} & {
+      $theme-map: () !global;
+      @each $key, $submap in $map {
+        $value: map-get(map-get($themes, $theme), "#{$key}");
+        $theme-map: map-merge(
+          $theme-map,
+          (
+            $key: $value,
+          )
+        ) !global;
+      }
+      @content;
+      transition: all 400ms linear;
+      $theme-map: null !global;
+    }
+  }
+}
+
+@function getThemeValue($key) {
+  @return map-get($theme-map, $key);
+}

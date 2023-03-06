@@ -1,0 +1,56 @@
+@import "./base/varibale.scss";
+@import "./base/breakPoint.scss";
+
+.wrapper {
+  padding: 1em 0;
+}
+
+.spotify {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & > span {
+    border: 2px solid;
+    border-radius: 10px;
+    display: inline-block;
+    padding: 0.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+  }
+
+  & > p {
+    font-size: smaller;
+  }
+
+  & > p:nth-child(2) {
+    margin: 0 10px;
+    color: $primary-text;
+  }
+  & > p:nth-child(3) {
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100px;
+
+    span {
+      display: inline-block;
+    }
+  }
+}
+
+.designCredit {
+  text-align: center;
+
+  a {
+    text-decoration: none;
+    color: $primary-text;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

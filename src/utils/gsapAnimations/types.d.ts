@@ -1,0 +1,1 @@
+type ModuleStylesType = { readonly [key: string]: string; }
