@@ -12,9 +12,16 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <AppThemeProvider value={isDarkMode} updateTheme={updateDarkMode}>
-      <div className={`${isDarkMode ? "theme-default" : "theme-light"} `}>
+      <div className={`${isDarkMode ? "theme-default" : "theme-light"} themes `}>
         <div className='appTheme'>
           <Component {...pageProps} />
+
+          <div className='waveWrapper'>
+            <div className='wave'>
+
+            </div>
+
+          </div>
         </div>
       </div>
     </AppThemeProvider>
