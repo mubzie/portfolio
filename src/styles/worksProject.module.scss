@@ -1,0 +1,11 @@
+@import "./base/varibale.scss";
+@import "./base/breakPoint.scss";
+
+.wrapper {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+  @include themify {
+    // background-color: getThemeValue("bg");
+  }
+}

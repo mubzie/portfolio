@@ -12,7 +12,8 @@
 //   height: 100%;
 // }
 
-body {
+body,
+html {
   font-family: "Nunito", sans-serif;
   margin: 0;
   scroll-behavior: smooth;
@@ -30,7 +31,7 @@ body {
     z-index: 5;
     transform-origin: center bottom;
     mix-blend-mode: difference;
-    // pointer-events: none;
+    pointer-events: none;
     transform: scaleY(1.5);
     overflow-x: clip;
 
@@ -40,9 +41,17 @@ body {
       position: absolute;
       bottom: 0;
       width: 6400px;
+      width: calc(1600px * 4);
       height: 198px;
       animation: sinWave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
       transform: translate3d(0, 0, 0);
+      transform-origin: left center;
+    }
+
+    .wave:nth-of-type(2) {
+      animation: sinWave 6900ms cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.125s infinite,
+        swell 7s ease -1.25s infinite;
+      opacity: 0.1;
     }
 
     @keyframes sinWave {
@@ -51,6 +60,16 @@ body {
       }
       100% {
         margin-left: -1600px;
+      }
+    }
+
+    @keyframes swell {
+      0%,
+      100% {
+        transform: translate3d(0, -25px, 0);
+      }
+      50% {
+        transform: translate3d(0, 5px, 0);
       }
     }
 

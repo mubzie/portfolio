@@ -1,38 +1,87 @@
 const projects = [
     {
-        name: "MoreApps",
-        stack: ["NextJs,TailwindCss, Gsap, ReduxToolkit"],
-        writeUp: ``
+        name: "More Apps",
+        id: "MoreApps",
+        stack: ["NextJs, TailwindCss, Gsap, Redux-Toolkit"],
+        writeUp: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cum, pariatur exercitationem. Blanditiis totam ut unde magni, distinctio voluptatem excepturi illo deserunt velit. Dignissimos, temporibus vero consequuntur expedita quo nam iste!
+                Asperiores dignissimos, obcaecati at non excepturi molestiae odio rem fuga placeat natus hic atque commodi.`,
+        links: {
+            live: "",
+            code: ""
+        }
+
     },
     {
-        name: "WhatsAppClone",
-        stack: ["NextJs,TailwindCss, Gsap, ReduxToolkit"],
-        writeUp: ``
+        name: "WhatsApp Clone",
+        id: "WhatsAppClone",
+        stack: ["NextJs, TailwindCss, Gsap, Redux-Toolkit"],
+        writeUp: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cum, pariatur exercitationem. Blanditiis totam ut unde magni, distinctio voluptatem excepturi illo deserunt velit. Dignissimos, temporibus vero consequuntur expedita quo nam iste!
+                Asperiores dignissimos, obcaecati at non excepturi molestiae odio rem fuga placeat natus hic atque commodi.`,
+        links: {
+            live: "",
+            code: ""
+        }
+
     },
     {
         name: "3D Room",
-        stack: ["NextJs,TailwindCss, Gsap, ReduxToolkit"],
-        writeUp: ``
+        id: "3DRoom",
+        stack: ["NextJs, TailwindCss, Gsap, Redux-Toolkit"],
+        writeUp: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cum, pariatur exercitationem. Blanditiis totam ut unde magni, distinctio voluptatem excepturi illo deserunt velit. Dignissimos, temporibus vero consequuntur expedita quo nam iste!
+                Asperiores dignissimos, obcaecati at non excepturi molestiae odio rem fuga placeat natus hic atque commodi.`,
+        links: {
+            live: "",
+            code: ""
+        }
+
     },
     {
         name: "Airpods Ecommerce",
-        stack: ["NextJs,TailwindCss, Gsap, ReduxToolkit"],
-        writeUp: ``
+        id: "AirpodsEcommerce",
+        stack: ["NextJs, TailwindCss, Gsap, Redux-Toolkit"],
+        writeUp: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cum, pariatur exercitationem. Blanditiis totam ut unde magni, distinctio voluptatem excepturi illo deserunt velit. Dignissimos, temporibus vero consequuntur expedita quo nam iste!
+                Asperiores dignissimos, obcaecati at non excepturi molestiae odio rem fuga placeat natus hic atque commodi.`,
+        links: {
+            live: "",
+            code: ""
+        }
+
     },
     {
         name: "WhatsAppClone",
-        stack: ["NextJs,TailwindCss, Gsap, ReduxToolkit"],
-        writeUp: ``
+        id: "WhatsAppClone",
+        stack: ["NextJs, TailwindCss, Gsap, Redux-Toolkit"],
+        writeUp: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cum, pariatur exercitationem. Blanditiis totam ut unde magni, distinctio voluptatem excepturi illo deserunt velit. Dignissimos, temporibus vero consequuntur expedita quo nam iste!
+                Asperiores dignissimos, obcaecati at non excepturi molestiae odio rem fuga placeat natus hic atque commodi.`,
+        links: {
+            live: "",
+            code: ""
+        }
+
     },
     {
         name: "Twitter Design",
-        stack: ["NextJs,TailwindCss, Gsap, ReduxToolkit"],
-        writeUp: ``
+        id: "TwitterDesign",
+        stack: ["NextJs, TailwindCss, Gsap, Redux-Toolkit"],
+        writeUp: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cum, pariatur exercitationem. Blanditiis totam ut unde magni, distinctio voluptatem excepturi illo deserunt velit. Dignissimos, temporibus vero consequuntur expedita quo nam iste!
+                Asperiores dignissimos, obcaecati at non excepturi molestiae odio rem fuga placeat natus hic atque commodi.`,
+        links: {
+            live: "",
+            code: ""
+        }
+
     },
     {
-        name: "WhatsAppClone",
-        stack: ["NextJs,TailwindCss, Gsap, ReduxToolkit"],
-        writeUp: ``
+        name: "WhatsApp Clone",
+        id: "WhatsAppClone",
+        stack: ["NextJs, TailwindCss, Gsap, Redux-Toolkit"],
+        writeUp: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cum, pariatur exercitationem. Blanditiis totam ut unde magni, distinctio voluptatem excepturi illo deserunt velit. Dignissimos, temporibus vero consequuntur expedita quo nam iste!
+                Asperiores dignissimos, obcaecati at non excepturi molestiae odio rem fuga placeat natus hic atque commodi.`,
+        links: {
+            live: "",
+            code: ""
+        }
+
     },
 ]
 

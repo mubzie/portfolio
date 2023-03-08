@@ -2,7 +2,12 @@
 @import "./base/breakPoint.scss";
 
 .wrapper {
+  height: 100%;
+}
+
+.container {
   margin-bottom: 2em;
+  overflow-x: clip;
   @include md {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -12,7 +17,7 @@
 .aside {
   display: none;
 
-  & > a {
+  & nav > a {
     display: grid;
     grid-template-columns: auto auto;
     column-gap: 10px;
@@ -29,10 +34,68 @@
 
     h2 {
       transform: translateX(-50px);
+      opacity: 0.3;
     }
 
     @include themify {
       color: getThemeValue("text");
+    }
+  }
+
+  .asideSocials {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    column-gap: 10px;
+
+    & > a {
+      display: grid;
+      grid-template-columns: auto auto;
+      align-items: center;
+      justify-content: center;
+      column-gap: 5px;
+      border: 4px solid;
+      padding: 10px 15px;
+      border-radius: 30px;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        transform: translateX(-100%);
+
+        @include themify {
+          background-color: getThemeValue("bg");
+        }
+      }
+
+      &:hover {
+        @include themify {
+          fill: getThemeValue("text-invert");
+          color: getThemeValue("text-invert");
+        }
+      }
+
+      &:hover::before {
+        transform: translateX(0px);
+        @include themify {
+          background-color: getThemeValue("bg-invert");
+        }
+      }
+
+      @include themify {
+        border-color: getThemeValue("border");
+        fill: getThemeValue("text");
+      }
     }
   }
 
@@ -65,6 +128,18 @@
   fieldset {
     border: 3px solid;
     border-radius: 7px;
+    // clip-path: polygon(
+    //   50% 17%,
+    //   57% 40%,
+    //   76% 39%,
+    //   60% 50%,
+    //   71% 75%,
+    //   52% 59%,
+    //   31% 75%,
+    //   43% 50%,
+    //   21% 39%,
+    //   43% 40%
+    // );
 
     legend {
       font-weight: 700;
@@ -88,12 +163,11 @@
 
   & > button {
     width: 100%;
-    height: 0px;
     font-weight: bold;
     display: block;
-    transform-origin: top center;
-    padding: 0;
+    padding: 1em;
     cursor: pointer;
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
 
     @include themify {
       background-color: getThemeValue("bg-invert");
@@ -132,16 +206,18 @@
       padding: 0;
       li {
         list-style: none;
-        border-bottom: 1px solid;
         margin-bottom: 2em;
         cursor: pointer;
 
-        a {
+        > .projectTag {
           display: flex;
           align-items: center;
           justify-content: space-between;
           text-decoration: none;
           font-weight: lighter;
+          font-size: 0.5rem;
+          padding-bottom: 2em;
+          border-bottom: 1px solid;
 
           &:hover {
             transform: scale(0.9);
@@ -165,11 +241,67 @@
 
           @include themify {
             color: getThemeValue("text");
+            border-color: getThemeValue("border");
           }
         }
 
-        @include themify {
-          border-color: getThemeValue("border");
+        > .projectContent {
+          clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+          height: 0;
+
+          span {
+            width: 100%;
+            height: 200px;
+            display: block;
+            position: relative;
+            filter: grayscale(100%);
+            transition: filter 500ms ease-in;
+
+            &:hover {
+              filter: grayscale(0%);
+            }
+          }
+
+          p:nth-of-type(2) {
+            text-transform: uppercase;
+          }
+
+          > div {
+            display: grid;
+            grid-template-columns: auto auto;
+            width: fit-content;
+            column-gap: 10px;
+            height: fit-content;
+
+            a {
+              display: grid;
+              grid-template-columns: auto auto;
+              width: fit-content;
+              column-gap: 20px;
+              text-decoration: none;
+              color: inherit;
+              height: fit-content;
+
+              span {
+                height: fit-content;
+              }
+
+              span:nth-of-type(2) {
+                display: inline-block;
+                width: 15px;
+                height: 15px;
+              }
+
+              &:hover {
+                border-bottom: 1px solid;
+                padding-bottom: 0.5em;
+              }
+
+              @include themify {
+                border-color: getThemeValue("bg-invert");
+              }
+            }
+          }
         }
       }
     }

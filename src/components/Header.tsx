@@ -18,7 +18,7 @@ function Header() {
     useEffect(() => {
         const scrollCallBack = (e: Event) => {
             const headerWrapper = document.querySelector(`.${styles.wrapper}`)!;
-            if (Math.floor(window.scrollY) > 10) {
+            if (Math.floor(window.scrollY) > 50) {
                 headerWrapper.classList.add(styles.active);
             } else {
                 headerWrapper.classList.remove(styles.active);

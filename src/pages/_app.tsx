@@ -17,10 +17,8 @@ export default function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
 
           <div className='waveWrapper'>
-            <div className='wave'>
-
-            </div>
-
+            <div className='wave' />
+            <div className='wave' />
           </div>
         </div>
       </div>

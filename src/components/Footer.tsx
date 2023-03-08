@@ -6,7 +6,7 @@ function Footer() {
     return (
         <div className={styles.wrapper}>
             <div className={styles.spotify}>
-                <span>
+                <span className='hoverLinks'>
                     <Image
                         src={"/imgs/wiz.jpeg"}
                         alt={"spotify song artwork"}

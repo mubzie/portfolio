@@ -44,7 +44,7 @@ export class HomePageAnimation {
                     translateX: 0,
                     scrollTrigger: {
                         trigger: item,
-                        scrub: 0.2
+                        scrub: 0.5,
                     }
                 }
             )
@@ -116,7 +116,7 @@ export class HomePageAnimation {
         gsap.to(
             downloadFullCvbtn,
             {
-                height: "50px",
+                clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
                 duration: .5,
                 scrollTrigger: {
                     trigger: downloadFullCvbtn,
@@ -125,6 +125,22 @@ export class HomePageAnimation {
                 }
             }
         )
+
+        // Fieldset
+        const aboutFieldset = document.querySelector(`.${this.styles.about} > fieldset`);
+
+
+        // gsap.to(
+        //     aboutFieldset,
+        //     {
+        //         duration: .5,
+        //         clipPath: "polygon(50% 0%, 100% 0, 100% 34%, 100% 56%, 100% 100%, 50% 100%, 0 100%, 0 59%, 0 36%, 0 0)",
+        //         scrollTrigger: {
+        //             trigger: aboutFieldset,
+        //             start: "top 30%",
+        //         }
+        //     }
+        // )
 
     }
 
@@ -144,7 +160,8 @@ export class HomePageAnimation {
             }
         ).to(aboutSecH2,
             {
-                translateX: "10px"
+                translateX: "10px",
+                opacity: 1,
             },
             "<"
         )
@@ -179,7 +196,8 @@ export class HomePageAnimation {
             }
         ).to(workSecH2,
             {
-                translateX: "10px"
+                translateX: "10px",
+                opacity: 1,
             },
             "<"
         )
@@ -213,7 +231,8 @@ export class HomePageAnimation {
             }
         ).to(contactSecH2,
             {
-                translateX: "10px"
+                translateX: "10px",
+                opacity: 1,
             },
             "<"
         )
@@ -265,6 +284,33 @@ export class HomePageAnimation {
                 }
             }
         )
+    }
+
+    animateProjects(id: string) {
+        const content = document.getElementById(id)!;
+
+        if (content.classList.contains("open")) {
+            gsap.to(
+                content,
+                {
+                    clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
+                    height: "0",
+                    duration: 0.5,
+                    onComplete: () => { content.classList.remove("open") }
+                }
+            )
+        } else {
+            gsap.to(
+                content,
+                {
+                    clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+                    height: "auto",
+                    duration: 0.5,
+                    onComplete: () => { content.classList.add("open") }
+                }
+            )
+        }
+
     }
 
     resizeCallback() {

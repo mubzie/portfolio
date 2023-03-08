@@ -3,7 +3,7 @@
 
 .wrapper {
   padding: 0.5em 0;
-  border: 1px solid;
+  border-top: 1px solid;
 
   @include themify {
     border-color: getThemeValue("border");
@@ -22,6 +22,7 @@
   justify-content: center;
 
   & > span {
+    position: relative;
     border: 2px solid;
     border-radius: 10px;
     display: inline-block;
@@ -30,6 +31,7 @@
     align-items: center;
     justify-content: center;
     width: fit-content;
+    filter: invert(1);
   }
 
   & > p {

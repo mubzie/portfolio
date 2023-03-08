@@ -10,8 +10,8 @@ import { HomePageAnimation } from '@/utils/gsapAnimations/HomePage'
 import MouseHoverEffect from '@/utils/gsapAnimations/MouseHoverEffect'
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon'
 import Link from 'next/link'
-import WorkProjectOverlay from '@/components/WorkProjectOverlay'
 import projects from "@/projects"
+import Image from 'next/image'
 
 
 export default function Home() {
@@ -40,7 +40,7 @@ export default function Home() {
     </svg>
   )
   return (
-    <>
+    <div className={home.wrapper}>
       <Head>
         <title>Ye - Mi Portfolio</title>
         <meta name="description" content="Creative Frontend Developer Portfolio" />
@@ -48,29 +48,49 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <div className={home.wrapper}>
+      <div className={home.container}>
         <aside className={home.aside}>
-          <Link className='aboutNav' href={"#about"} >
-            <span className={home.asideNavIcons}>
-              <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
-            </span>
+          <nav>
+            <Link className='aboutNav' href={"#about"} >
+              <span className={home.asideNavIcons}>
+                <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
+              </span>
 
-            <h2>About</h2>
+              <h2>About</h2>
 
-          </Link>
-          <Link className='workNav' href={"#works"} >
-            <span className={home.asideNavIcons}>
-              <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
-            </span>
-            <h2>Work</h2>
+            </Link>
+            <Link className='workNav' href={"#works"} >
+              <span className={home.asideNavIcons}>
+                <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
+              </span>
+              <h2>Work</h2>
 
-          </Link>
-          <Link className='contactNav' href={"#contact"}>
-            <span className={home.asideNavIcons}>
-              <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
-            </span>
-            <h2>Contact</h2>
-          </Link>
+            </Link>
+            <Link className='contactNav' href={"#contact"}>
+              <span className={home.asideNavIcons}>
+                <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
+              </span>
+              <h2>Contact</h2>
+            </Link>
+          </nav>
+          <div className={home.asideSocials}>
+            <a href='#' className='hoverLinks'>
+              <TwitterIcon width={"15px"} height={"15px"} />
+              <span>Twitter</span>
+            </a>
+            <a href='#' className='hoverLinks'>
+              <LinkedInIcon width={"15px"} height={"15px"} />
+              <span>LinkedIn</span>
+            </a>
+            <a href='#' className='hoverLinks'>
+              <GithubIcon width={"15px"} height={"15px"} />
+              <span>GitHub</span>
+            </a>
+
+
+
+          </div>
+
         </aside>
         <main className={home.main}>
           <section className={home.about}>
@@ -122,8 +142,8 @@ export default function Home() {
               <ul>
                 {
                   projects.map((project, i) => (
-                    <li key={`${project.name}-${i}`}>
-                      <Link href={`/works/${project.name}`}>
+                    <li key={`${project.id}-${i}`}>
+                      <div className={home.projectTag} onClick={() => animation.current?.animateProjects(`${project.id}-${i}`)}>
                         <p>
                           <span>{i + 1 > 9 ? `#${i + 1}` : `#0${i + 1}`}</span>
                           <span>
@@ -134,7 +154,43 @@ export default function Home() {
                         <span>
                           <RotatedArrowIcon />
                         </span>
-                      </Link>
+                      </div>
+                      <div id={`${project.id}-${i}`} className={`${home.projectContent} `}>
+                        <span className='hoverLinks'>
+                          <Image
+                            src={"/imgs/wiz.jpeg"}
+                            alt={"project artwork"}
+                            fill={true}
+                            style={{
+                              objectFit: "cover",
+
+                            }}
+                          />
+                        </span>
+                        <p>{project.writeUp}</p>
+
+                        <p>Built with: {project.stack}</p>
+                        <div>
+                          <a href={project.links.live}>
+                            <span>
+                              Live
+                            </span>
+                            <span>
+                              <RotatedArrowIcon />
+                            </span>
+                          </a>
+                          <a href={project.links.code}>
+                            <span>
+                              Code
+                            </span>
+                            <span>
+                              <RotatedArrowIcon />
+                            </span>
+
+                          </a>
+                        </div>
+
+                      </div>
 
                     </li>
                   ))
@@ -170,8 +226,8 @@ export default function Home() {
           {/* <WorkProjectOverlay /> */}
         </main>
       </div>
-
       <Footer />
-    </>
+
+    </div>
   )
 }
