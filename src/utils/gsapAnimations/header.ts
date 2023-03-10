@@ -2,7 +2,8 @@ import gsap from 'gsap'
 
 
 export default class HeaderAnimations {
-    private styles: ModuleStylesType
+    private styles: ModuleStylesType;
+    themeIconTweenRef!: gsap.core.Tween;
     constructor(styles: ModuleStylesType) {
         this.styles = styles;
     }
@@ -42,7 +43,7 @@ export default class HeaderAnimations {
     private animateThemeIcon() {
         const paths = document.querySelectorAll(".themeIconPath");
 
-        gsap.to(paths, {
+        this.themeIconTweenRef = gsap.to(paths, {
             duration: 5,
             strokeDashoffset: "+=124",
             repeat: -1,
@@ -54,6 +55,6 @@ export default class HeaderAnimations {
     }
 
     dispose() {
-
+        this.themeIconTweenRef.kill();
     }
 }

@@ -5,17 +5,40 @@ import Footer from '@/components/Footer'
 import TwitterIcon from '@/components/icons/TwitterIcon'
 import LinkedInIcon from '@/components/icons/LinkedInIcon'
 import GithubIcon from '@/components/icons/GithubIcon'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { HomePageAnimation } from '@/utils/gsapAnimations/HomePage'
 import MouseHoverEffect from '@/utils/gsapAnimations/MouseHoverEffect'
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon'
 import Link from 'next/link'
 import projects from "@/projects"
 import Image from 'next/image'
+import SpotifyWebApi from "spotify-web-api-node";
+
+export interface SpotifyDataProps {
+  accessToken: string | null,
+  expiresIn: number | null,
+  isError: boolean;
+  error: { statusCode: number, body: any } | null
+}
 
 
-export default function Home() {
-  const animation = useRef<HomePageAnimation | null>(null)
+
+export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps }) {
+
+
+  const animation = useRef<HomePageAnimation | null>(null);
+
+  const RotatedArrowIcon = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={4.5}
+      stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+    </svg>
+  )
+
   useEffect(() => {
     animation.current = new HomePageAnimation(home);
     const mouseHoverEffect = new MouseHoverEffect()
@@ -29,16 +52,9 @@ export default function Home() {
     }
   }, [])
 
-  const RotatedArrowIcon = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={4.5}
-      stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-    </svg>
-  )
+
+
+
   return (
     <div className={home.wrapper}>
       <Head>
@@ -51,7 +67,7 @@ export default function Home() {
       <div className={home.container}>
         <aside className={home.aside}>
           <nav>
-            <Link className='aboutNav' href={"#about"} >
+            <Link className='aboutNav' href={""} >
               <span className={home.asideNavIcons}>
                 <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
               </span>
@@ -59,14 +75,14 @@ export default function Home() {
               <h2>About</h2>
 
             </Link>
-            <Link className='workNav' href={"#works"} >
+            <Link className='workNav' href={""} >
               <span className={home.asideNavIcons}>
                 <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
               </span>
               <h2>Work</h2>
 
             </Link>
-            <Link className='contactNav' href={"#contact"}>
+            <Link className='contactNav' href={""}>
               <span className={home.asideNavIcons}>
                 <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
               </span>
@@ -93,7 +109,7 @@ export default function Home() {
 
         </aside>
         <main className={home.main}>
-          <section className={home.about}>
+          <section id='about' className={home.about}>
             <h1>
               bringing ideas to life
               with frontend technology
@@ -136,7 +152,7 @@ export default function Home() {
             <button>Download Full Cv</button>
           </section>
 
-          <section className={home.works}>
+          <section id='works' className={home.works}>
             <h2>{`Projects I've Built And Worked On`}</h2>
             <div className={home.worksProjects}>
               <ul>
@@ -156,21 +172,35 @@ export default function Home() {
                         </span>
                       </div>
                       <div id={`${project.id}-${i}`} className={`${home.projectContent} `}>
-                        <span className='hoverLinks'>
-                          <Image
-                            src={"/imgs/wiz.jpeg"}
-                            alt={"project artwork"}
-                            fill={true}
-                            style={{
-                              objectFit: "cover",
+                        <div className={`${home.projectContentImg} hoverLinks`}>
+                          <span>
+                            <Image
+                              src={"/imgs/wiz.jpeg"}
+                              alt={"project artwork"}
+                              fill={true}
+                              style={{
+                                objectFit: "cover",
 
-                            }}
-                          />
-                        </span>
+                              }}
+                            />
+                          </span>
+                          <span>
+                            <Image
+                              src={"/imgs/wiz.jpeg"}
+                              alt={"project artwork"}
+                              fill={true}
+                              style={{
+                                objectFit: "cover",
+
+                              }}
+                            />
+                          </span>
+                        </div>
+
                         <p>{project.writeUp}</p>
 
                         <p>Built with: {project.stack}</p>
-                        <div>
+                        <div className={home.projectContentLinks}>
                           <a href={project.links.live}>
                             <span>
                               Live
@@ -199,7 +229,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section className={home.contact}>
+          <section id='contact' className={home.contact}>
             <h2>
               You should drop by
             </h2>
@@ -226,8 +256,50 @@ export default function Home() {
           {/* <WorkProjectOverlay /> */}
         </main>
       </div>
-      <Footer />
+      <Footer spotifyData={spotifyData} />
 
     </div>
   )
+}
+
+export async function getStaticProps() {
+
+  let spotifyApi = new SpotifyWebApi({
+    clientId: process.env.Spotify_Client_Id,
+    clientSecret: process.env.Spotify_Client_Secret
+  });
+
+  const spotifyData: SpotifyDataProps = {
+    accessToken: "",
+    expiresIn: 0,
+    isError: false,
+    error: null
+  }
+
+  spotifyApi.setAccessToken(process.env.Spotify_Access_Token as string);
+  spotifyApi.setRefreshToken(process.env.Spotify_RefreshToken as string);
+
+
+
+  try {
+    const data = await spotifyApi.refreshAccessToken();
+
+    spotifyData.accessToken = data.body.access_token || null;
+    spotifyData.expiresIn = data.body.expires_in || null
+    spotifyData.isError = false;
+
+  } catch (err: any) {
+
+    spotifyData.isError = true;
+    spotifyData.error = { statusCode: err?.statusCode || null, body: err.body || null }
+  }
+
+
+  return {
+    props: {
+      spotifyData
+    },
+    // if theres no error revalidate and re-build the page 10 min before the spotify accessToken expires
+    revalidate: spotifyData.expiresIn ? spotifyData.expiresIn - 600 : 40
+  }
 }

@@ -1,8 +1,10 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/dist/ScrollToPlugin";
 import { sortElementInnerText } from './chunks';
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollToPlugin);
 
 export class HomePageAnimation {
     private styles: ModuleStylesType
@@ -49,6 +51,43 @@ export class HomePageAnimation {
                 }
             )
         })
+
+    }
+
+    animateProjects(id: string) {
+        const content = document.getElementById(id)!;
+
+        if (content.classList.contains("open")) {
+            gsap.to(
+                content,
+                {
+                    clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
+                    height: "0",
+                    duration: 0.5,
+                    onComplete: () => {
+                        content.classList.remove("open");
+                        this.asideNavScrollTriggerRef.forEach(ref => {
+                            ref.refresh();
+                        })
+                    }
+                }
+            )
+        } else {
+            gsap.to(
+                content,
+                {
+                    clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+                    height: "auto",
+                    duration: 0.5,
+                    onComplete: () => {
+                        content.classList.add("open");
+                        this.asideNavScrollTriggerRef.forEach(ref => {
+                            ref.refresh()
+                        })
+                    }
+                }
+            )
+        }
 
     }
 
@@ -171,15 +210,14 @@ export class HomePageAnimation {
                 animation: aboutTimeline,
                 trigger: aboutSec,
                 start: "top 90%",
+                invalidateOnRefresh: true,
                 end: "bottom 90%",
                 toggleActions: "play reverse play reverse"
             })
         )
 
         aboutNav.addEventListener("click", () => {
-            document.documentElement.style.scrollBehavior = "smooth"
-            document.body.scrollTop = 0
-            document.documentElement.scrollTop = 0
+            gsap.to(window, { duration: 1, scrollTo: { y: "#about", offsetY: 70 }, });
         })
 
         // Work section
@@ -207,6 +245,7 @@ export class HomePageAnimation {
                 animation: workTimeline,
                 trigger: workSec,
                 // markers: true,
+                invalidateOnRefresh: true,
                 start: "top 90%",
                 end: "bottom 90%",
                 toggleActions: "play reverse play reverse"
@@ -214,7 +253,7 @@ export class HomePageAnimation {
         )
 
         workNav.addEventListener("click", () => {
-            workSec.scrollIntoView({ behavior: "smooth", block: "center" })
+            gsap.to(window, { duration: 1, scrollTo: { y: "#works", offsetY: 70 }, });
         })
 
         // Contact section
@@ -244,12 +283,13 @@ export class HomePageAnimation {
                 start: "top 90%",
                 end: "bottom top",
                 // markers: true,
+                invalidateOnRefresh: true,
                 toggleActions: "play reverse play reverse"
             })
         )
 
         contactNav.addEventListener("click", () => {
-            contactSec.scrollIntoView({ behavior: "smooth" });
+            gsap.to(window, { duration: 1, scrollTo: { y: "#contact", offsetY: 0 }, });
         })
 
 
@@ -286,32 +326,7 @@ export class HomePageAnimation {
         )
     }
 
-    animateProjects(id: string) {
-        const content = document.getElementById(id)!;
 
-        if (content.classList.contains("open")) {
-            gsap.to(
-                content,
-                {
-                    clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
-                    height: "0",
-                    duration: 0.5,
-                    onComplete: () => { content.classList.remove("open") }
-                }
-            )
-        } else {
-            gsap.to(
-                content,
-                {
-                    clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-                    height: "auto",
-                    duration: 0.5,
-                    onComplete: () => { content.classList.add("open") }
-                }
-            )
-        }
-
-    }
 
     resizeCallback() {
         this.asideNavScrollTriggerRef.forEach(ref => {
@@ -321,6 +336,6 @@ export class HomePageAnimation {
 
 
     dispose() {
-
+        ScrollTrigger.killAll();
     }
 }

@@ -16,7 +16,6 @@ body,
 html {
   font-family: "Nunito", sans-serif;
   margin: 0;
-  scroll-behavior: smooth;
 }
 
 .appTheme {
@@ -33,19 +32,19 @@ html {
     mix-blend-mode: difference;
     pointer-events: none;
     transform: scaleY(1.5);
-    overflow-x: clip;
+    overflow: clip;
 
     .wave {
       background: url("/imgs/white-overlay.svg");
       background-repeat: repeat-x;
       position: absolute;
-      bottom: 0;
+      bottom: -10px;
       width: 6400px;
       width: calc(1600px * 4);
       height: 198px;
       animation: sinWave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
       transform: translate3d(0, 0, 0);
-      transform-origin: left center;
+      transform-origin: center center;
     }
 
     .wave:nth-of-type(2) {
@@ -55,10 +54,27 @@ html {
     }
 
     @keyframes sinWave {
+      // 0% {
+      //   margin-left: 0;
+      // }
+      // 100% {
+      //   margin-left: -1600px;
+      // }
       0% {
         margin-left: 0;
+        transform: scaleY(1.2);
+      }
+      25% {
+        transform: scaleY(1);
+      }
+      50% {
+        transform: scaleY(0.98);
+      }
+      75% {
+        transform: scaleY(1.18);
       }
       100% {
+        transform: scaleY(1.2);
         margin-left: -1600px;
       }
     }
