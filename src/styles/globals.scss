@@ -3,29 +3,23 @@
 @import "./base/varibale.scss";
 @import "./base/breakPoint.scss";
 
-// html,
-// body,
-// #__next,
-// .themes,
-// .appTheme {
-//   min-height: 100%;
-//   height: 100%;
-// }
-
 body,
 html {
   font-family: "Nunito", sans-serif;
   margin: 0;
+  background-color: black;
 }
 
 .appTheme {
   position: relative;
+  z-index: 2;
+  overflow: clip;
 
   .waveWrapper {
     height: 10%;
     width: 100%;
     position: absolute;
-    bottom: 0;
+    bottom: -10px;
     left: 0;
     z-index: 5;
     transform-origin: center bottom;
@@ -35,16 +29,19 @@ html {
     overflow: clip;
 
     .wave {
-      background: url("/imgs/white-overlay.svg");
       background-repeat: repeat-x;
       position: absolute;
-      bottom: -10px;
+      bottom: 0px;
       width: 6400px;
       width: calc(1600px * 4);
       height: 198px;
       animation: sinWave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
       transform: translate3d(0, 0, 0);
       transform-origin: center center;
+
+      @include themifyGlobal {
+        background: getThemeValue("wave-img");
+      }
     }
 
     .wave:nth-of-type(2) {
@@ -93,43 +90,22 @@ html {
       transform: scaleY(1);
     }
   }
-  // .waveWrapper {
-  //   height: 30%;
-  //   width: 100%;
-  //   position: fixed;
-  //   bottom: 0;
-  //   left: 0;
-  //   z-index: 5;
-  //   transform-origin: center bottom;
-  //   pointer-events: none;
-  //   transform: scale(0);
-  //   // overflow-x: clip;
 
-  //   .wave {
-  //     background: url("/imgs/white-overlay.svg");
-  //     background-repeat: repeat-x;
-  //     position: absolute;
-  //     bottom: 0;
-  //     width: 6400px;
-  //     height: 198px;
-  //     animation: sinWave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
-  //     transform: translate3d(0, 0, 0);
-  //   }
-
-  //   @keyframes sinWave {
-  //     0% {
-  //       margin-left: 0;
-  //     }
-  //     100% {
-  //       margin-left: -1600px;
-  //     }
-  //   }
-  // }
   @include themifyGlobal($themes) {
-    background-color: getThemeValue("bg");
+    background-color: getThemeValue("bg-transparent");
     color: getThemeValue("text");
     border-color: getThemeValue("border");
   }
+}
+
+.webgl_canvas {
+  position: fixed;
+  display: block;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: black;
 }
 
 * {

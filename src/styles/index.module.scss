@@ -193,7 +193,6 @@
     }
 
     @include themify {
-      background-color: getThemeValue("bg-lighten");
       border-color: getThemeValue("border");
     }
   }

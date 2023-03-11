@@ -40,7 +40,6 @@
     align-items: center;
     justify-content: center;
     width: fit-content;
-    filter: invert(1);
 
     audio {
       position: absolute;
@@ -52,6 +51,7 @@
 
     @include themify {
       border-color: getThemeValue("text-secondary");
+      filter: getThemeValue("filter");
     }
   }
 
@@ -75,6 +75,7 @@
       display: block;
       width: max-content;
       animation: scrollInfinity 7s linear infinite;
+      color: white;
 
       span {
         display: inline-block;
@@ -107,9 +108,17 @@
   padding: 1em 0;
   font-size: small;
 
-  small {
-    filter: invert(1);
-    font-size: inherit;
+  span {
+    color: white;
+    small {
+      filter: invert(1);
+      font-size: inherit;
+      color: white;
+
+      @include themify {
+        filter: getThemeValue("filter");
+      }
+    }
   }
 
   a {
@@ -120,5 +129,10 @@
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  @include themify {
+    // color: getThemeValue("color");
+    // filter: getThemeValue("'filter");
   }
 }

@@ -87,8 +87,8 @@ function Footer({ spotifyData }: { spotifyData: SpotifyDataProps }) {
 
                 // console.log(currentPlayingTrack)
                 // console.log(recentlyPlayedTracks)
-            } catch (err) {
-                console.log(err)
+            } catch (err: any) {
+                console.log(err?.statusCode)
             }
 
         }

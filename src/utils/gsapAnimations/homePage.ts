@@ -2,18 +2,26 @@ import gsap from 'gsap'
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/dist/ScrollToPlugin";
 import { sortElementInnerText } from './chunks';
+import WebglExperience from '../webGL';
+import MouseHoverEffect from './MouseHoverEffect';
 
 gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(ScrollToPlugin);
 
 export class HomePageAnimation {
-    private styles: ModuleStylesType
+    private styles: ModuleStylesType;
     loopLegendElRef!: gsap.core.Tween;
-    asideNavScrollTriggerRef: globalThis.ScrollTrigger[]
-    constructor(styles: ModuleStylesType) {
+    asideNavScrollTriggerRef: globalThis.ScrollTrigger[];
+    mouseHoverEffect: MouseHoverEffect;
+    webglExperience: WebglExperience;
+    constructor(styles: ModuleStylesType, mouseHoverEffect: MouseHoverEffect) {
         this.styles = styles;
+
+        this.mouseHoverEffect = mouseHoverEffect;
+        this.webglExperience = new WebglExperience(this.mouseHoverEffect);
         this.asideNavScrollTriggerRef = [];
 
+        this.webglExperience.init()
         this.resizeCallback = this.resizeCallback.bind(this)
 
         window.addEventListener("resize", this.resizeCallback);
@@ -337,5 +345,6 @@ export class HomePageAnimation {
 
     dispose() {
         ScrollTrigger.killAll();
+        this.webglExperience.dispose()
     }
 }

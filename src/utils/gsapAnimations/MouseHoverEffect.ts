@@ -1,4 +1,5 @@
 import gsap from 'gsap'
+import * as  THREE from "three"
 
 
 interface Vector2 {
@@ -6,12 +7,14 @@ interface Vector2 {
     y: number
 }
 export default class MouseHoverEffect {
-    mouseCoords: Vector2;
-    mouseNormalizeCoords: Vector2;
+    mouseCoords: THREE.Vector2;
+    mouseNormalizeCoords: THREE.Vector2;
     mouseHoverdiv!: HTMLDivElement;
+    isMouseMoved: boolean;
     constructor() {
-        this.mouseCoords = { x: 0, y: 0 }
-        this.mouseNormalizeCoords = { x: 0, y: 0 }
+        this.isMouseMoved = false;
+        this.mouseCoords = new THREE.Vector2()
+        this.mouseNormalizeCoords = new THREE.Vector2()
 
         this.mouseMoveCallback = this.mouseMoveCallback.bind(this);
 
@@ -70,6 +73,8 @@ export default class MouseHoverEffect {
         this.mouseNormalizeCoords.x = e.clientX / window.innerWidth;
         this.mouseNormalizeCoords.y = e.clientY / window.innerHeight;
 
+        this.isMouseMoved = true;
+
         // check if cursor is hovering a link
         const links = document.querySelectorAll(".hoverLinks");
         let hoveringLink = false;
@@ -83,7 +88,8 @@ export default class MouseHoverEffect {
             }
         }
 
-        this.followCursor(hoveringLink)
+        this.followCursor(hoveringLink);
+        this.isMouseMoved = true;
 
     }
 

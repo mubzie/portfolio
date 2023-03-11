@@ -21,6 +21,8 @@ export default function App({ Component, pageProps }: AppProps) {
             <div className='wave' />
           </div>
         </div>
+        <canvas className='webgl_canvas' />
+
       </div>
     </AppThemeProvider>
 

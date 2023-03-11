@@ -13,6 +13,7 @@ import Link from 'next/link'
 import projects from "@/projects"
 import Image from 'next/image'
 import SpotifyWebApi from "spotify-web-api-node";
+import { useAppTheme } from '@/components/AppThemeProvider'
 
 export interface SpotifyDataProps {
   accessToken: string | null,
@@ -24,6 +25,9 @@ export interface SpotifyDataProps {
 
 
 export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps }) {
+
+  const [isDarkMode] = useAppTheme();
+
 
 
   const animation = useRef<HomePageAnimation | null>(null);
@@ -40,8 +44,9 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
   )
 
   useEffect(() => {
-    animation.current = new HomePageAnimation(home);
-    const mouseHoverEffect = new MouseHoverEffect()
+    const mouseHoverEffect = new MouseHoverEffect();
+
+    animation.current = new HomePageAnimation(home, mouseHoverEffect);
 
     animation.current.init();
     mouseHoverEffect.init();
@@ -51,6 +56,13 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
       mouseHoverEffect.dispose()
     }
   }, [])
+
+  useEffect(() => {
+
+    if (animation.current) {
+      animation.current.webglExperience.handleAppThemeChange(isDarkMode)
+    }
+  }, [isDarkMode])
 
 
 
