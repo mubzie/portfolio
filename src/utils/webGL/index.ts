@@ -31,6 +31,7 @@ export default class WebglExperience {
     mouseHoverEffect: MouseHoverEffect;
     lightsTimelineRef!: gsap.core.Timeline;
     isMobileScreen: boolean = false;
+
     constructor(mouseHoverEffect: MouseHoverEffect) {
         this.mouseHoverEffect = mouseHoverEffect;
         this.scene = new THREE.Scene();
@@ -69,30 +70,24 @@ export default class WebglExperience {
     handleAppThemeChange(isDarkMode: boolean) {
         this.isDarkMode = isDarkMode
 
+
         if (isDarkMode) {
-            // (this.liquidBackgroundOverlay.waterMesh as any).color = new THREE.Color("black");
-            // this.liquidBackgroundOverlay.waterMaterial.color = new THREE.Color("black");
             gsap.to(
-                this.liquidBackgroundOverlay.waterMaterial.uniforms['uIsDarkMode'],
+                this.liquidBackgroundOverlay.waterColor,
                 {
-                    value: 0,
-                    duration: 1
+                    color: "black",
+                    duration: 1,
                 }
             )
-            // this.liquidBackgroundOverlay.waterMaterial.needsUpdate = true;
-            // this.liquidBackgroundOverlay.waterMaterial.uniformsNeedUpdate = true;
+
         } else {
-            // (this.liquidBackgroundOverlay.waterMesh as any).color = new THREE.Color("white");
-            // this.liquidBackgroundOverlay.waterMaterial.color = new THREE.Color("white");
             gsap.to(
-                this.liquidBackgroundOverlay.waterMaterial.uniforms['uIsDarkMode'],
+                this.liquidBackgroundOverlay.waterColor,
                 {
-                    value: 1,
-                    duration: 1
+                    color: "white",
+                    duration: 1,
                 }
             )
-            // this.liquidBackgroundOverlay.waterMaterial.uniformsNeedUpdate = true;
-            // this.liquidBackgroundOverlay.waterMaterial.needsUpdate = true;
 
         }
 

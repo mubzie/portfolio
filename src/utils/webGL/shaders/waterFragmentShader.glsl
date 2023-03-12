@@ -59,19 +59,7 @@ void main() {
     vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
     #include <envmap_fragment>
 
-    #ifdef OPAQUE
-    diffuseColor.a = 1.0;
-    #endif
-
-    // https://github.com/mrdoob/three.js/pull/22425
-    #ifdef USE_TRANSMISSION
-    diffuseColor.a *= material.transmissionAlpha + 0.1;
-    #endif
-
-    gl_FragColor = vec4(outgoingLight + themeColor, diffuseColor.a);
-
-	// #include <output_fragment>
-    // gl_FragColor = vec4(outputedBg, 1.0);
+	#include <output_fragment>
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>

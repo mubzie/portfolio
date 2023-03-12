@@ -192,6 +192,8 @@ export class HomePageAnimation {
                     left: 0,
                     scale: 1,
                     duration: 1,
+                    delay: 0.5,
+                    opacity: 1,
                     scrollTrigger: {
                         trigger: el,
                         // markers: true,
@@ -232,21 +234,6 @@ export class HomePageAnimation {
             }
         )
 
-        // Fieldset
-        const aboutFieldset = document.querySelector(`.${this.styles.about} > fieldset`);
-
-
-        // gsap.to(
-        //     aboutFieldset,
-        //     {
-        //         duration: .5,
-        //         clipPath: "polygon(50% 0%, 100% 0, 100% 34%, 100% 56%, 100% 100%, 50% 100%, 0 100%, 0 59%, 0 36%, 0 0)",
-        //         scrollTrigger: {
-        //             trigger: aboutFieldset,
-        //             start: "top 30%",
-        //         }
-        //     }
-        // )
 
     }
 

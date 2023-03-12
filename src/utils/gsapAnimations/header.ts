@@ -16,6 +16,7 @@ export default class HeaderAnimations {
         const lightWrapper = document.querySelector(".lightThemeWrapper") as HTMLDivElement;
         const darkWrapper = document.querySelector(".darkThemeWrapper") as HTMLDivElement;
 
+
         const tl = gsap.timeline({ defaults: { duration: .6 } })
         if (isDarkMode) {
             tl.to(lightWrapper, {
@@ -24,7 +25,14 @@ export default class HeaderAnimations {
             }).to(darkWrapper,
                 {
                     translateY: 0,
-                    opacity: 1
+                    opacity: 1,
+                    onComplete: () => {
+                        gsap.to(lightWrapper, {
+                            translateY: "-30px",
+                            opacity: 0,
+                            duration: 0.5
+                        })
+                    }
                 }
             )
         } else {
@@ -34,7 +42,14 @@ export default class HeaderAnimations {
             }).to(lightWrapper,
                 {
                     translateY: 0,
-                    opacity: 1
+                    opacity: 1,
+                    onComplete: () => {
+                        gsap.to(darkWrapper, {
+                            translateY: "30px",
+                            opacity: 0,
+                            duration: 0.5
+                        })
+                    }
                 }
             )
         }

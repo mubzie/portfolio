@@ -32,6 +32,7 @@ export default class LiquidBackgroundOverlay {
     gpuCompute: GPUComputationRenderer;
     simplex: SimplexNoise;
     heightmapVariable!: Variable;
+    waterColor: { color: string } = { color: "black" };
     constructor(experience: WebglExperience) {
         this.experience = experience;
         this.scene = experience.scene;
@@ -74,7 +75,6 @@ export default class LiquidBackgroundOverlay {
     }
 
     setUpWater() {
-        const materialColor = "black";
 
         const geometry = new THREE.PlaneGeometry(this.BOUNDS, this.BOUNDS, this.WIDTH - 1, this.WIDTH - 1);
 
@@ -84,7 +84,8 @@ export default class LiquidBackgroundOverlay {
                 THREE.ShaderLib['phong'].uniforms,
                 {
                     'heightmap': { value: null },
-                    "uIsDarkMode": { value: 1 }
+                    "uIsDarkMode": { value: 1 },
+                    "color": { value: new THREE.Color(this.waterColor.color) }
                 }
             ]),
             vertexShader: waterVertexShader,
@@ -97,7 +98,7 @@ export default class LiquidBackgroundOverlay {
         this.waterMaterial.lights = true;
 
         // Material attributes from THREE.MeshPhongMaterial
-        this.waterMaterial.color = new THREE.Color(materialColor);
+        this.waterMaterial.color = new THREE.Color(this.waterColor.color);
         this.waterMaterial.specular = new THREE.Color(0x111111);
         this.waterMaterial.shininess = 50;
 
@@ -106,6 +107,7 @@ export default class LiquidBackgroundOverlay {
         this.waterMaterial.uniforms['specular'].value = this.waterMaterial.specular;
         this.waterMaterial.uniforms['shininess'].value = Math.max(this.waterMaterial.shininess, 1e-4);
         this.waterMaterial.uniforms['opacity'].value = this.waterMaterial.opacity;
+        this.waterMaterial.uniforms['color'].value = this.waterMaterial.color;
         this.waterMaterial.uniforms['uIsDarkMode'].value = 1;
 
         // Defines
@@ -117,7 +119,7 @@ export default class LiquidBackgroundOverlay {
 
         this.waterMesh = new THREE.Mesh(geometry, this.waterMaterial);
         this.waterMesh.rotation.x = -Math.PI * 0.165;
-        this.waterMesh.scale.set(2.5, 1.5, 1)
+        this.waterMesh.scale.set(2.6, 1.5, 1)
 
         this.waterMesh.matrixAutoUpdate = false;
         this.waterMesh.updateMatrix();
@@ -143,7 +145,7 @@ export default class LiquidBackgroundOverlay {
         this.gpuCompute.setVariableDependencies(this.heightmapVariable, [this.heightmapVariable]);
 
         this.heightmapVariable.material.uniforms['mousePos'] = { value: new THREE.Vector2(10000, 10000) };
-        this.heightmapVariable.material.uniforms['mouseSize'] = { value: 82.0 };
+        this.heightmapVariable.material.uniforms['mouseSize'] = { value: 100.0 };
         this.heightmapVariable.material.uniforms['viscosityConstant'] = { value: 0.99 };
         this.heightmapVariable.material.uniforms['heightCompensation'] = { value: 0 };
         this.heightmapVariable.material.defines.BOUNDS = this.BOUNDS.toFixed(1);
@@ -210,7 +212,7 @@ export default class LiquidBackgroundOverlay {
             for (let i = 0; i < this.WIDTH; i++) {
 
                 const x = i * 128 / this.WIDTH;
-                const y = j * 128 / this.WIDTH;
+                const y = j * 228 / this.WIDTH;
 
                 pixels[p + 0] = noise(x, y);
                 pixels[p + 1] = pixels[p + 0];
@@ -230,6 +232,7 @@ export default class LiquidBackgroundOverlay {
 
 
     update() {
+        this.waterMaterial.uniforms.color.value.set(this.waterColor.color)
         // Set uniforms: mouse interaction
         const uniforms = this.heightmapVariable.material.uniforms;
 
