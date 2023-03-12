@@ -54,7 +54,10 @@ export default class WebglExperience {
         this.liquidBackgroundOverlay = new LiquidBackgroundOverlay(this);
 
         this.liquidBackgroundOverlay.setUpWater();
-        document.body.appendChild(this.stats.dom)
+        if (window.location.hash === '#stats') {
+            document.body.appendChild(this.stats.dom)
+        }
+
 
         this.tick = this.tick.bind(this)
         this.onResizeCallback = this.onResizeCallback.bind(this);
