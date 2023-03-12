@@ -46,6 +46,7 @@ function Footer({ spotifyData }: { spotifyData: SpotifyDataProps }) {
 
     useEffect(() => {
         const spotifyApi = new SpotifyWebApi();
+        let intervalId: NodeJS.Timer;
 
         const getSpotifyPlayState = async () => {
 
@@ -88,13 +89,20 @@ function Footer({ spotifyData }: { spotifyData: SpotifyDataProps }) {
                 // console.log(currentPlayingTrack)
                 // console.log(recentlyPlayedTracks)
             } catch (err: any) {
-                console.log(err?.statusCode)
+                if (err?.statusCode === 401) {
+                    spotifyApi.refreshAccessToken().then(data => {
+                        spotifyData.accessToken = data.body.access_token
+                    }).catch(() => {
+                        if (intervalId) clearInterval(intervalId)
+                    })
+                }
             }
 
         }
 
-        if (spotifyData?.accessToken) {
+        if (spotifyData?.accessToken && spotifyData?.refreshToken) {
             spotifyApi.setAccessToken(spotifyData.accessToken);
+            spotifyApi.setRefreshToken(spotifyData.refreshToken);
 
             getSpotifyPlayState()
 
@@ -102,7 +110,7 @@ function Footer({ spotifyData }: { spotifyData: SpotifyDataProps }) {
 
         }
 
-        const intervalId = setInterval(getSpotifyPlayState, 7000);
+        intervalId = setInterval(getSpotifyPlayState, 7000);
 
         () => clearInterval(intervalId);
     }, [spotifyData])
@@ -173,7 +181,7 @@ function Footer({ spotifyData }: { spotifyData: SpotifyDataProps }) {
 
             <div className={styles.designCredit}>
                 <span>Designed with <small>&#10084;&#65039;</small>  by </span>
-                <a href="">Mubarak Rabiu</a>
+                <a href="https://www.behance.net/mubzie">Mubarak Rabiu</a>
             </div>
 
         </div>
