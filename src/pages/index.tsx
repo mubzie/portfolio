@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 import TwitterIcon from '@/components/icons/TwitterIcon'
 import LinkedInIcon from '@/components/icons/LinkedInIcon'
 import GithubIcon from '@/components/icons/GithubIcon'
-import { useEffect, useRef, useState } from 'react'
+import { MouseEvent, useEffect, useRef, useState } from 'react'
 import { HomePageAnimation } from '@/utils/gsapAnimations/HomePage'
 import MouseHoverEffect from '@/utils/gsapAnimations/MouseHoverEffect'
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon'
@@ -17,6 +17,7 @@ import { useAppTheme } from '@/components/AppThemeProvider'
 
 export interface SpotifyDataProps {
   accessToken: string | null,
+  refreshToken: string | null,
   expiresIn: number | null,
   isError: boolean;
   error: { statusCode: number, body: any } | null
@@ -102,15 +103,15 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
             </Link>
           </nav>
           <div className={home.asideSocials}>
-            <a href='#' className='hoverLinks'>
+            <a href='https://twitter.com/BlackTiyemi' target={"_blank"} className='hoverLinks'>
               <TwitterIcon width={"15px"} height={"15px"} />
               <span>Twitter</span>
             </a>
-            <a href='#' className='hoverLinks'>
+            <a href='https://www.linkedin.com/in/adeyanju-adeyemi-88b058235' target={"_blank"} className='hoverLinks'>
               <LinkedInIcon width={"15px"} height={"15px"} />
               <span>LinkedIn</span>
             </a>
-            <a href='#' className='hoverLinks'>
+            <a href='https://github.com/DevYemi' target={"_blank"} className='hoverLinks'>
               <GithubIcon width={"15px"} height={"15px"} />
               <span>GitHub</span>
             </a>
@@ -129,10 +130,7 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
             <fieldset role={"presentation"}>
               <legend>About Me</legend>
               <p>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cum, pariatur exercitationem. Blanditiis totam ut unde magni, distinctio voluptatem excepturi illo deserunt velit. Dignissimos, temporibus vero consequuntur expedita quo nam iste!
-                Asperiores dignissimos, obcaecati at non excepturi molestiae odio rem fuga placeat natus hic atque commodi. Explicabo enim atque non illo, debitis vero eveniet nam recusandae magni aut nisi commodi quas?
-                Culpa facere in iure dolor rerum non ipsa est, natus ipsum quaerat quos facilis consequatur reiciendis quibusdam officia nostrum debitis, temporibus quas quod alias quasi laborum quae excepturi nulla? Quos.
-                Dolorem sequi ea eligendi dolor expedita quae et maxime voluptas at sit quam blanditiis, eveniet quo facere fuga odit nam quia adipisci officia temporibus soluta eum voluptatem sapiente. Repellat, sapiente!.
+                {`Hi there, i'm Adeyanju Adeyemi a frontend developer currently based in Lagos Nigeria`}
               </p>
             </fieldset>
 
@@ -142,30 +140,34 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
                 <p>Creative Frontend Developer</p>
               </div>
               <div className={home.cvSummaryContent}>
-                <h2 className={home.cvSumary_header}>Language</h2>
+                <h2 className={home.cvSumary_header}>Language, Stacks and Frameworks</h2>
                 <p>
-                  JavaScript, Reactjs, CSS, TypeScript Gatsby, Python
+                  English, ...Oops sorry. Html, Css, JavaScript, TypeScript, ReactJs, NextJs, Redux, Scss, Tailwind Css, ThreeJs, WebGL
                 </p>
               </div>
               <div className={home.cvSummaryContent}>
-                <h2 className={home.cvSumary_header}>Skills</h2>
+                <h2 className={home.cvSumary_header}>Soft Skills</h2>
+                <p>Blender 3D software, Photoshop software</p>
+              </div>
+              <div className={home.cvSummaryContent}>
+                <h2 className={home.cvSumary_header}>Interpersonal Skills</h2>
                 <p>Team work, Effective communication, attention to details.</p>
               </div>
               <div className={home.cvSummaryContent}>
                 <h2 className={home.cvSumary_header}>Experience</h2>
-                <p>Google - Frontend Engineer</p>
-                <p>{`Jan ‘22 - present`}</p>
+                <p>Polongo.Ltd - Frontend Engineer</p>
+                <p>{`Jan ‘22 - feb ‘23 `}</p>
                 <ul>
-                  <li>I completed and passed all personal design task within the stipulated period, through to stage 9.</li>
-                  <li>I contributed and collaborated with my team member for every team project that lead to the team successful project launch</li>
+                  <li>I built and completed  all assigned design task within the stipulated period.</li>
+                  <li>I contributed and collaborated with my team member for every team project that lead to the team successful project MVP launch</li>
                 </ul>
               </div>
             </div>
-            <button>Download Full Cv</button>
+            <a href='/assets/Adeyanju-CV.pdf' download={true}>Download Full Cv</a>
           </section>
 
           <section id='works' className={home.works}>
-            <h2>{`Projects I've Built And Worked On`}</h2>
+            <h2>{`Still Have  Doubts ?, Check out Projects I've Built And Worked On`}</h2>
             <div className={home.worksProjects}>
               <ul>
                 {
@@ -184,10 +186,14 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
                         </span>
                       </div>
                       <div id={`${project.id}-${i}`} className={`${home.projectContent} `}>
-                        <div className={`${home.projectContentImg} hoverLinks`}>
+                        <div
+                          className={`${home.projectContentImg} hoverLinks`}
+                          onMouseEnter={(e) => animation.current?.animateProjectImgOnHover(e.currentTarget, "enter")}
+                          onMouseLeave={(e) => animation.current?.animateProjectImgOnHover(e.currentTarget, "leave")}
+                        >
                           <span>
                             <Image
-                              src={"/imgs/wiz.jpeg"}
+                              src={project.img}
                               alt={"project artwork"}
                               fill={true}
                               style={{
@@ -196,16 +202,33 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
                               }}
                             />
                           </span>
-                          <span>
+                          <span className={home.projectContentImgOverlay}>
                             <Image
-                              src={"/imgs/wiz.jpeg"}
+                              src={project.img}
                               alt={"project artwork"}
                               fill={true}
                               style={{
                                 objectFit: "cover",
-
+                                filter: "url(#noise)"
                               }}
                             />
+                            <svg>
+                              <filter id='noise' x='0%' y='0%' width='100%' height='100%' >
+                                {/* <feTurbulence baseFrequency='0.05 0.07' result='NOISE' numOctaves={0.5} id='image-turbulence' /> */}
+                                <feTurbulence
+                                  baseFrequency='0.05 0.07'
+                                  result='NOISE'
+                                  numOctaves={1}
+                                  id='image-turbulence'
+                                />
+                                <feDisplacementMap
+                                  in='SourceGraphic'
+                                  in2='NOISE'
+                                  scale={50}
+                                  id='image-displacement'
+                                />
+                              </filter>
+                            </svg>
                           </span>
                         </div>
 
@@ -221,15 +244,32 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
                               <RotatedArrowIcon />
                             </span>
                           </a>
-                          <a href={project.links.code}>
-                            <span>
-                              Code
-                            </span>
-                            <span>
-                              <RotatedArrowIcon />
-                            </span>
+                          {
+                            project.links.code &&
+                            <a href={project.links.code}>
+                              <span>
+                                Code
+                              </span>
+                              <span>
+                                <RotatedArrowIcon />
+                              </span>
 
-                          </a>
+                            </a>
+                          }
+
+                          {
+                            project.links.design &&
+                            <a href={project.links.design}>
+                              <span>
+                                Design
+                              </span>
+                              <span>
+                                <RotatedArrowIcon />
+                              </span>
+
+                            </a>
+                          }
+
                         </div>
 
                       </div>
@@ -246,22 +286,22 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
               You should drop by
             </h2>
             <p>
-              Got a question, proposal or project or want to work together on something? Feel free to reach out, and s possible to get back to you.
+              Got a question, proposal or project or want us to work together on something? Feel free to reach out to me, and i will get back to you as soon as posible.
             </p>
             <button>Say Hello!</button>
 
             <fieldset> <legend>connect with me on my social</legend></fieldset>
 
             <div className={home.contactSocialIcons}>
-              <span className='hoverLinks'>
+              <a href='https://twitter.com/BlackTiyemi' target={"_blank"} className='hoverLinks'>
                 <TwitterIcon width={"15px"} height={"15px"} />
-              </span>
-              <span className='hoverLinks'>
+              </a>
+              <a href='https://www.linkedin.com/in/adeyanju-adeyemi-88b058235' target={"_blank"} className='hoverLinks'>
                 <LinkedInIcon width={"15px"} height={"15px"} />
-              </span>
-              <span className='hoverLinks'>
+              </a>
+              <a href='https://github.com/DevYemi' target={"_blank"} className='hoverLinks'>
                 <GithubIcon width={"15px"} height={"15px"} />
-              </span>
+              </a>
             </div>
           </section>
 
@@ -283,6 +323,7 @@ export async function getStaticProps() {
 
   const spotifyData: SpotifyDataProps = {
     accessToken: "",
+    refreshToken: "",
     expiresIn: 0,
     isError: false,
     error: null
@@ -297,6 +338,7 @@ export async function getStaticProps() {
     const data = await spotifyApi.refreshAccessToken();
 
     spotifyData.accessToken = data.body.access_token || null;
+    spotifyData.refreshToken = process.env.Spotify_RefreshToken || null;
     spotifyData.expiresIn = data.body.expires_in || null
     spotifyData.isError = false;
 
