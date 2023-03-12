@@ -4,7 +4,7 @@ uniform vec3 emissive;
 uniform vec3 specular;
 uniform float shininess;
 uniform float opacity;
-uniform vec3 uColor;
+uniform float uIsDarkMode;
 #include <common>
 #include <packing>
 #include <dithering_pars_fragment>
@@ -31,10 +31,15 @@ uniform vec3 uColor;
 #include <logdepthbuf_pars_fragment>
 #include <clipping_planes_pars_fragment>
 void main() {
+    vec3 whiteColor = vec3(1.0, 1.0, 1.0);
+    vec3 blackColor = vec3(0.0, 0.0, 0.0);
+    vec3 themeColor = mix(blackColor, whiteColor, uIsDarkMode);
+
 	#include <clipping_planes_fragment>
     vec4 diffuseColor = vec4(diffuse, opacity);
+
     ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
-    vec3 totalEmissiveRadiance = emissive;
+
 	#include <logdepthbuf_fragment>
 	#include <map_fragment>
 	#include <color_fragment>
@@ -49,14 +54,28 @@ void main() {
 	#include <lights_fragment_maps>
 	#include <lights_fragment_end>
 	#include <aomap_fragment>
+    vec3 totalEmissiveRadiance = emissive;
+
     vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
-	#include <envmap_fragment>
-	#include <output_fragment>
+    #include <envmap_fragment>
+
+    #ifdef OPAQUE
+    diffuseColor.a = 1.0;
+    #endif
+
+    // https://github.com/mrdoob/three.js/pull/22425
+    #ifdef USE_TRANSMISSION
+    diffuseColor.a *= material.transmissionAlpha + 0.1;
+    #endif
+
+    gl_FragColor = vec4(outgoingLight + themeColor, diffuseColor.a);
+
+	// #include <output_fragment>
+    // gl_FragColor = vec4(outputedBg, 1.0);
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>
 	#include <premultiplied_alpha_fragment>
 	#include <dithering_fragment>
 
-    // gl_FragColor = vec4(uColor, 1.0);
 }

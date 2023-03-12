@@ -29,6 +29,8 @@ export default class WebglExperience {
     requestAnimationFrameRef!: number
     liquidBackgroundOverlay!: LiquidBackgroundOverlay;
     mouseHoverEffect: MouseHoverEffect;
+    lightsTimelineRef!: gsap.core.Timeline;
+    isMobileScreen: boolean = false;
     constructor(mouseHoverEffect: MouseHoverEffect) {
         this.mouseHoverEffect = mouseHoverEffect;
         this.scene = new THREE.Scene();
@@ -39,6 +41,9 @@ export default class WebglExperience {
             deltaTime: 16,
             elaspedTime: 0
         }
+
+        if (window.innerWidth < 768) this.isMobileScreen = true;
+
         // Order Matters
         this.setUpSizes();
         this.setUpCamera();
@@ -63,21 +68,32 @@ export default class WebglExperience {
 
     handleAppThemeChange(isDarkMode: boolean) {
         this.isDarkMode = isDarkMode
-        if (isDarkMode) {
-            console.log(this.liquidBackgroundOverlay.waterMaterial)
-            this.liquidBackgroundOverlay.waterMaterial.color = new THREE.Color("black");
-            this.liquidBackgroundOverlay.waterMaterial.uniforms['color'].value = new THREE.Color("black");
-            this.liquidBackgroundOverlay.waterMaterial.needsUpdate = true;
-            this.liquidBackgroundOverlay.waterMaterial.uniformsNeedUpdate = true;
-        } else {
-            console.log(this.liquidBackgroundOverlay.waterMaterial.uniforms['color'].value)
-            console.log(this.liquidBackgroundOverlay.waterMaterial)
-            this.liquidBackgroundOverlay.waterMaterial.color = new THREE.Color("white");
-            this.liquidBackgroundOverlay.waterMaterial.uniforms['color'].value = new THREE.Color("white");
-            this.liquidBackgroundOverlay.waterMaterial.uniformsNeedUpdate = true;
-            this.liquidBackgroundOverlay.waterMaterial.needsUpdate = true;
 
-            console.log(this.liquidBackgroundOverlay.waterMaterial.uniforms['color'].value)
+        if (isDarkMode) {
+            // (this.liquidBackgroundOverlay.waterMesh as any).color = new THREE.Color("black");
+            // this.liquidBackgroundOverlay.waterMaterial.color = new THREE.Color("black");
+            gsap.to(
+                this.liquidBackgroundOverlay.waterMaterial.uniforms['uIsDarkMode'],
+                {
+                    value: 0,
+                    duration: 1
+                }
+            )
+            // this.liquidBackgroundOverlay.waterMaterial.needsUpdate = true;
+            // this.liquidBackgroundOverlay.waterMaterial.uniformsNeedUpdate = true;
+        } else {
+            // (this.liquidBackgroundOverlay.waterMesh as any).color = new THREE.Color("white");
+            // this.liquidBackgroundOverlay.waterMaterial.color = new THREE.Color("white");
+            gsap.to(
+                this.liquidBackgroundOverlay.waterMaterial.uniforms['uIsDarkMode'],
+                {
+                    value: 1,
+                    duration: 1
+                }
+            )
+            // this.liquidBackgroundOverlay.waterMaterial.uniformsNeedUpdate = true;
+            // this.liquidBackgroundOverlay.waterMaterial.needsUpdate = true;
+
         }
 
 
@@ -95,13 +111,32 @@ export default class WebglExperience {
         const sun2 = new THREE.DirectionalLight(0xFFFFFF, 1.0);
         sun2.position.set(-100, 0, 175);
 
-        const sun3 = new THREE.DirectionalLight(0xFFFFFF, 0.5);
-        sun3.position.set(100, 0, 175);
+        this.scene.add(sun, sun2)
 
-        const sun4 = new THREE.DirectionalLight(0xFFFFFF, 0.5);
-        sun4.position.set(-300, 300, 175);
+        this.lightsTimelineRef = gsap.timeline({ defaults: { duration: 10, yoyo: true, yoyoEase: true, repeat: -1, ease: "linear" } })
 
-        this.scene.add(sun, sun2, sun3, sun4)
+        this.lightsTimelineRef.to(
+            sun.position,
+            {
+                x: 100,
+                y: 0,
+            },
+            "together"
+        ).to(
+            sun2.position,
+            {
+                x: -300,
+                y: 300,
+            },
+            "together"
+        ).to(
+            [sun, sun2],
+            {
+                intensity: 0.5
+            },
+            "together"
+        )
+
     }
 
     setUpSizes() {
@@ -137,7 +172,7 @@ export default class WebglExperience {
         })
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.setSize(this.sizes.width, this.sizes.height);
-        this.renderer.setClearColor(new THREE.Color("yellow"))
+        this.renderer.setClearColor(new THREE.Color("black"))
         this.renderer.setClearAlpha(1)
     }
 
@@ -160,6 +195,8 @@ export default class WebglExperience {
         this.sizes.width = this.canvas.width;
         this.sizes.height = this.canvas.height;
         this.sizes.aspectRatio = this.canvas.width / this.canvas.height;
+
+        this.isMobileScreen = window.innerWidth < 768 ? true : false;
 
         // Update Camera
         this.camera.aspect = this.sizes.aspectRatio
@@ -186,6 +223,7 @@ export default class WebglExperience {
     }
 
     dispose() {
+        this.lightsTimelineRef.kill()
         this.liquidBackgroundOverlay.dispose();
 
         window.removeEventListener("resize", this.onResizeCallback);

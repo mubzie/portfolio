@@ -4,6 +4,7 @@ import { ScrollToPlugin } from "gsap/dist/ScrollToPlugin";
 import { sortElementInnerText } from './chunks';
 import WebglExperience from '../webGL';
 import MouseHoverEffect from './MouseHoverEffect';
+import { MouseEvent } from 'react';
 
 gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(ScrollToPlugin);
@@ -62,8 +63,59 @@ export class HomePageAnimation {
 
     }
 
+    animateProjectImgOnHover(element: HTMLElement, type: "enter" | "leave") {
+        const spanWrapper = element.querySelector(`.${this.styles.projectContentImgOverlay}`)
+        const filterTurbulence = document.getElementById("image-turbulence");
+        const filterDisplacement = document.getElementById("image-displacement");
+
+        const tl = gsap.timeline({ defaults: { duration: 1 } })
+
+
+        if (type === "enter") {
+            tl.to(
+                spanWrapper,
+                {
+                    clipPath: "circle(200% at 0% 0%)"
+                }
+            ).to(
+                filterTurbulence,
+                {
+                    attr: { baseFrequency: "0.0 0.0" }
+                },
+                "<0.1"
+            ).to(
+                filterDisplacement,
+                {
+                    attr: { scale: 0 }
+                },
+                "<"
+            )
+        } else {
+            tl.to(
+                filterTurbulence,
+                {
+                    attr: { baseFrequency: "0.05 0.07" }
+                },
+            ).to(
+                filterDisplacement,
+                {
+                    attr: { scale: 50 }
+                },
+                "<"
+            ).to(
+                spanWrapper,
+                {
+                    clipPath: "circle(0% at 0% 0%)"
+                },
+                "<0.1"
+            )
+        }
+    }
+
     animateProjects(id: string) {
         const content = document.getElementById(id)!;
+        const spanWrapperInner = content.querySelector(`.${this.styles.projectContentImg}`) as HTMLElement
+
 
         if (content.classList.contains("open")) {
             gsap.to(
@@ -77,6 +129,10 @@ export class HomePageAnimation {
                         this.asideNavScrollTriggerRef.forEach(ref => {
                             ref.refresh();
                         })
+                        if (this.webglExperience.isMobileScreen) {
+                            this.animateProjectImgOnHover(spanWrapperInner, "leave")
+                        }
+
                     }
                 }
             )
@@ -92,6 +148,9 @@ export class HomePageAnimation {
                         this.asideNavScrollTriggerRef.forEach(ref => {
                             ref.refresh()
                         })
+                        if (this.webglExperience.isMobileScreen) {
+                            this.animateProjectImgOnHover(spanWrapperInner, "enter")
+                        }
                     }
                 }
             )
@@ -158,7 +217,7 @@ export class HomePageAnimation {
         )
 
         // Download Full Cv Button animation
-        const downloadFullCvbtn = document.querySelector(`.${this.styles.about} > button`);
+        const downloadFullCvbtn = document.querySelector(`.${this.styles.about} > a`);
 
         gsap.to(
             downloadFullCvbtn,
@@ -254,8 +313,8 @@ export class HomePageAnimation {
                 trigger: workSec,
                 // markers: true,
                 invalidateOnRefresh: true,
-                start: "top 90%",
-                end: "bottom 90%",
+                start: "top 70%",
+                end: "bottom 70%",
                 toggleActions: "play reverse play reverse"
             })
         )
@@ -345,6 +404,7 @@ export class HomePageAnimation {
 
     dispose() {
         ScrollTrigger.killAll();
+        this.loopLegendElRef.kill()
         this.webglExperience.dispose()
     }
 }

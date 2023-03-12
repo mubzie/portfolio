@@ -75,7 +75,6 @@ export default class LiquidBackgroundOverlay {
 
     setUpWater() {
         const materialColor = "black";
-        // const materialColor = 0x0040C0;
 
         const geometry = new THREE.PlaneGeometry(this.BOUNDS, this.BOUNDS, this.WIDTH - 1, this.WIDTH - 1);
 
@@ -85,7 +84,7 @@ export default class LiquidBackgroundOverlay {
                 THREE.ShaderLib['phong'].uniforms,
                 {
                     'heightmap': { value: null },
-                    "color": { value: new THREE.Color(materialColor) }
+                    "uIsDarkMode": { value: 1 }
                 }
             ]),
             vertexShader: waterVertexShader,
@@ -107,7 +106,7 @@ export default class LiquidBackgroundOverlay {
         this.waterMaterial.uniforms['specular'].value = this.waterMaterial.specular;
         this.waterMaterial.uniforms['shininess'].value = Math.max(this.waterMaterial.shininess, 1e-4);
         this.waterMaterial.uniforms['opacity'].value = this.waterMaterial.opacity;
-        this.waterMaterial.uniforms['color'].value = this.waterMaterial.color;
+        this.waterMaterial.uniforms['uIsDarkMode'].value = 1;
 
         // Defines
         this.waterMaterial.defines.WIDTH = this.WIDTH.toFixed(1);
@@ -117,8 +116,8 @@ export default class LiquidBackgroundOverlay {
 
 
         this.waterMesh = new THREE.Mesh(geometry, this.waterMaterial);
-        this.waterMesh.rotation.x = -Math.PI * 0.16;
-        this.waterMesh.scale.set(3, 1.5, 1)
+        this.waterMesh.rotation.x = -Math.PI * 0.165;
+        this.waterMesh.scale.set(2.5, 1.5, 1)
 
         this.waterMesh.matrixAutoUpdate = false;
         this.waterMesh.updateMatrix();
@@ -225,12 +224,16 @@ export default class LiquidBackgroundOverlay {
         }
     }
 
+    randomFromRange(min: number, max: number) {
+        return Math.random() * (max - min) + min;
+    }
+
 
     update() {
         // Set uniforms: mouse interaction
         const uniforms = this.heightmapVariable.material.uniforms;
 
-        if (this.mouseHoverEffect.isMouseMoved) {
+        if (this.mouseHoverEffect.isMouseMoved && !this.experience.isMobileScreen) {
 
             this.raycaster.setFromCamera(
                 {
@@ -245,6 +248,7 @@ export default class LiquidBackgroundOverlay {
             if (intersects.length > 0) {
 
                 const point = intersects[0].point;
+
                 uniforms['mousePos'].value.set(point.x, point.z);
 
             } else {
@@ -255,7 +259,33 @@ export default class LiquidBackgroundOverlay {
 
             this.mouseHoverEffect.isMouseMoved = false;
 
-        } else {
+        } else if (this.experience.isMobileScreen) {
+            this.raycaster.setFromCamera(
+                {
+                    x: this.randomFromRange(-1, 1),
+                    y: this.randomFromRange(-1, 1)
+                },
+                this.camera
+            );
+            const intersects = this.raycaster.intersectObject(this.rayMesh);
+
+            if (intersects.length > 0) {
+
+                const mobilePoints = {
+                    x: this.randomFromRange(-360, 360),
+                    y: this.randomFromRange(-268, 268),
+                    z: this.randomFromRange(-153, 153)
+                }
+
+                uniforms['mousePos'].value.set(mobilePoints.x, mobilePoints.z);
+
+            } else {
+
+                uniforms['mousePos'].value.set(10000, 10000);
+
+            }
+        }
+        else {
 
             uniforms['mousePos'].value.set(10000, 10000);
 
