@@ -100,14 +100,14 @@ export default class WebglExperience {
 
 
     setUpLights() {
-        // const sun = new THREE.DirectionalLight(0xFFFFFF, 2.0);
-        // sun.position.set(1, 1, 1)
 
         const sun = new THREE.DirectionalLight(0xFFFFFF, 1.0);
         sun.position.set(300, 400, 175);
+        // sun.position.set(400, 800, 75);
 
         const sun2 = new THREE.DirectionalLight(0xFFFFFF, 1.0);
         sun2.position.set(-100, 0, 175);
+        // sun2.position.set(-400, 1000, -275);
 
         this.scene.add(sun, sun2)
 

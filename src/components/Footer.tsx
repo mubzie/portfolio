@@ -90,11 +90,12 @@ function Footer({ spotifyData }: { spotifyData: SpotifyDataProps }) {
                 // console.log(recentlyPlayedTracks)
             } catch (err: any) {
                 if (err?.statusCode === 401) {
-                    spotifyApi.refreshAccessToken().then(data => {
-                        spotifyData.accessToken = data.body.access_token
-                    }).catch(() => {
-                        if (intervalId) clearInterval(intervalId)
-                    })
+                    console.log("Spotify Token Expired")
+                    // spotifyApi.refreshAccessToken().then(data => {
+                    //     spotifyData.accessToken = data.body.access_token
+                    // }).catch(() => {
+                    //     if (intervalId) clearInterval(intervalId)
+                    // })
                 }
             }
 
