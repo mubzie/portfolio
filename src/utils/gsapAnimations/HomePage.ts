@@ -1,9 +1,10 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/dist/ScrollToPlugin";
-import { sortElementInnerText } from './chunks';
+import { createDebounceFunc, sortElementInnerText } from './chunks';
 import WebglExperience from '../webGL';
 import MouseHoverEffect from './MouseHoverEffect';
+import LocomotiveScroll from "locomotive-scroll"
 import { MouseEvent } from 'react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -11,24 +12,33 @@ gsap.registerPlugin(ScrollToPlugin);
 
 export class HomePageAnimation {
     private styles: ModuleStylesType;
-    loopLegendElRef!: gsap.core.Tween;
     asideNavScrollTriggerRef: globalThis.ScrollTrigger[];
+    worksRefs!: gsap.core.Tween[];
     mouseHoverEffect: MouseHoverEffect;
     webglExperience: WebglExperience;
-    constructor(styles: ModuleStylesType, mouseHoverEffect: MouseHoverEffect) {
+    isMobileScreen: boolean = false;
+    locoScroll!: LocomotiveScroll;
+    constructor(styles: ModuleStylesType, locoScroll: LocomotiveScroll) {
         this.styles = styles;
+        this.worksRefs = [];
 
-        this.mouseHoverEffect = mouseHoverEffect;
+        this.locoScroll = locoScroll;
+        this.mouseHoverEffect = new MouseHoverEffect();
         this.webglExperience = new WebglExperience(this.mouseHoverEffect);
         this.asideNavScrollTriggerRef = [];
+        if (window.innerWidth < 768) this.isMobileScreen = true;
 
-        this.webglExperience.init()
-        this.resizeCallback = this.resizeCallback.bind(this)
+        this.mouseHoverEffect.init();
+        this.webglExperience.init();
+        this.resizeCallback = this.resizeCallback.bind(this);
+        this.animateWorks = createDebounceFunc(this.animateWorks.bind(this), 500)
+        this.updateLocomotiveScroll = this.updateLocomotiveScroll.bind(this)
 
         window.addEventListener("resize", this.resizeCallback);
     }
 
     init() {
+        this.setUpSmoothScrolling()
         this.animateAbout();
         this.animateContacts();
         this.animateAside();
@@ -37,27 +47,62 @@ export class HomePageAnimation {
 
     }
 
+    private setUpSmoothScrolling() {
+
+        // each time Locomotive Scroll updates, tell ScrollTrigger to update too (sync positioning)
+        this.locoScroll.on("scroll", ScrollTrigger.update);
+        const HomePageAnimation = this
+        // console.log((HomePageAnimation.locoScroll as any).scroll.instance.scroll.y)
+
+        // tell ScrollTrigger to use these proxy methods for the "scrollContainer" element since Locomotive Scroll is hijacking things
+        ScrollTrigger.scrollerProxy((this.locoScroll as any).el, {
+            scrollTop(value) {
+                if (arguments.length) {
+
+                    return HomePageAnimation.locoScroll.scrollTo(value!, { duration: 0.5 })
+
+                } else {
+                    return (HomePageAnimation.locoScroll as any).scroll.instance.scroll.y
+                }
+            }, // we don't have to define a scrollLeft because we're only scrolling vertically.
+            getBoundingClientRect() {
+                return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+            },
+            // LocomotiveScroll handles things completely differently on mobile devices - it doesn't even transform the container at all! So to get the correct behavior and avoid jitters, we should pin things with position: fixed on mobile. We sense it by checking to see if there's a transform applied to the container (the LocomotiveScroll-controlled element).
+            pinType: (this.locoScroll as any).el.style.transform ? "transform" : "fixed"
+        }
+        )
+        ScrollTrigger.addEventListener("refresh", this.updateLocomotiveScroll);
+        ScrollTrigger.defaults({ scroller: (this.locoScroll as any).el });
+
+    }
+    updateLocomotiveScroll() {
+        this.locoScroll.update()
+    }
     private animateWorks() {
+
         const workList = document.querySelectorAll(`.${this.styles.worksProjects} > ul > li`);
 
         workList.forEach((item, i) => {
-            gsap.fromTo(
-                item,
-                {
-                    opacity: 0,
-                    translateX: () => {
-                        if (i % 2 === 0) return "-120"
-                        else return "120"
+            this.worksRefs.push(
+                gsap.fromTo(
+                    item,
+                    {
+                        opacity: 0,
+                        translateX: () => {
+                            if (i % 2 === 0) return "-120"
+                            else return "120"
+                        },
                     },
-                },
-                {
-                    opacity: 1,
-                    translateX: 0,
-                    scrollTrigger: {
-                        trigger: item,
-                        scrub: 0.5,
+                    {
+                        opacity: 1,
+                        translateX: 0,
+                        scrollTrigger: {
+                            trigger: item,
+                            scrub: this.webglExperience.isMobileScreen ? false : 0.0001,
+                        }
                     }
-                }
+                )
             )
         })
 
@@ -113,8 +158,32 @@ export class HomePageAnimation {
     }
 
     animateProjects(id: string) {
+        let contentsArray = document.querySelectorAll(`.${this.styles.projectContent}`)
         const content = document.getElementById(id)!;
         const spanWrapperInner = content.querySelector(`.${this.styles.projectContentImg}`) as HTMLElement
+        let inactiveContent = Array.from(contentsArray).filter(item => item !== content)
+
+
+        // Close all other open projects
+        // gsap.to(
+        //     inactiveContent,
+        //     {
+        //         clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
+        //         height: "0",
+        //         duration: 0.5,
+        //         onComplete: () => {
+        //             inactiveContent.forEach(content => content.classList.remove("open"));
+        //             this.asideNavScrollTriggerRef.forEach(ref => {
+        //                 ref.refresh();
+        //             })
+        //             if (this.webglExperience.isMobileScreen) {
+        //                 this.animateProjectImgOnHover(spanWrapperInner, "leave")
+        //             }
+
+        //         }
+        //     }
+        // )
+
 
 
         if (content.classList.contains("open")) {
@@ -129,7 +198,7 @@ export class HomePageAnimation {
                         this.asideNavScrollTriggerRef.forEach(ref => {
                             ref.refresh();
                         })
-                        if (this.webglExperience.isMobileScreen) {
+                        if (this.isMobileScreen) {
                             this.animateProjectImgOnHover(spanWrapperInner, "leave")
                         }
 
@@ -148,7 +217,7 @@ export class HomePageAnimation {
                         this.asideNavScrollTriggerRef.forEach(ref => {
                             ref.refresh()
                         })
-                        if (this.webglExperience.isMobileScreen) {
+                        if (this.isMobileScreen) {
                             this.animateProjectImgOnHover(spanWrapperInner, "enter")
                         }
                     }
@@ -205,18 +274,6 @@ export class HomePageAnimation {
             )
         })
 
-        // Legend element loop animation
-        const legendEl = document.querySelector(`.${this.styles.about} fieldset > legend `) as HTMLLegendElement
-        this.loopLegendElRef = gsap.to(
-            legendEl,
-            {
-                duration: 3,
-                marginLeft: "50%",
-                yoyo: true,
-                repeat: -1,
-                yoyoEase: true
-            }
-        )
 
         // Download Full Cv Button animation
         const downloadFullCvbtn = document.querySelector(`.${this.styles.about} > a`);
@@ -228,8 +285,9 @@ export class HomePageAnimation {
                 duration: .5,
                 scrollTrigger: {
                     trigger: downloadFullCvbtn,
+                    // markers: true,
                     toggleActions: "play none none reverse",
-                    start: "top 70%"
+                    start: "top 85%"
                 }
             }
         )
@@ -238,14 +296,14 @@ export class HomePageAnimation {
     }
 
     private animateAside() {
-
+        const asideLinks = document.querySelectorAll(`.${this.styles.aside} > nav > div`)
 
         // About Section
         const aboutSec = document.querySelector(`.${this.styles.about}`)!;
         const aboutNav = document.querySelector(`.aboutNav`)!;
         const aboutSecH2 = document.querySelector(".aboutNav > h2");
         const aboutNavIcon = document.querySelector(`.aboutNav .${this.styles.asideNavIcons}`);
-        const aboutTimeline = gsap.timeline({ defaults: { duration: .5, ease: "linear" } })
+        const aboutTimeline = gsap.timeline({ defaults: { duration: .5, ease: "power1.in" } })
 
         aboutTimeline.to(aboutNavIcon,
             {
@@ -255,6 +313,10 @@ export class HomePageAnimation {
             {
                 translateX: "10px",
                 opacity: 1,
+                onComplete: () => {
+                    asideLinks.forEach(link => link.classList.remove("active"))
+                    aboutNav.classList.add("active")
+                }
             },
             "<"
         )
@@ -263,23 +325,21 @@ export class HomePageAnimation {
             ScrollTrigger.create({
                 animation: aboutTimeline,
                 trigger: aboutSec,
-                start: "top 90%",
+                // markers: true,
+                start: "top 70%",
                 invalidateOnRefresh: true,
-                end: "bottom 90%",
+                end: "+=125% 70%",
                 toggleActions: "play reverse play reverse"
             })
         )
 
-        aboutNav.addEventListener("click", () => {
-            gsap.to(window, { duration: 1, scrollTo: { y: "#about", offsetY: 70 }, });
-        })
 
         // Work section
         const workSec = document.querySelector(`.${this.styles.works}`)!;
         const workNav = document.querySelector(`.workNav`)!;
         const workSecH2 = document.querySelector(".workNav > h2");
         const workNavIcon = document.querySelector(`.workNav .${this.styles.asideNavIcons}`);
-        const workTimeline = gsap.timeline({ defaults: { duration: .5, ease: "linear" } })
+        const workTimeline = gsap.timeline({ defaults: { duration: .5, ease: "power1.in" } })
 
 
         workTimeline.to(workNavIcon,
@@ -290,6 +350,10 @@ export class HomePageAnimation {
             {
                 translateX: "10px",
                 opacity: 1,
+                onComplete: () => {
+                    asideLinks.forEach(link => link.classList.remove("active"))
+                    workNav.classList.add("active")
+                }
             },
             "<"
         )
@@ -306,16 +370,13 @@ export class HomePageAnimation {
             })
         )
 
-        workNav.addEventListener("click", () => {
-            gsap.to(window, { duration: 1, scrollTo: { y: "#works", offsetY: 70 }, });
-        })
 
         // Contact section
         const contactSec = document.querySelector(`.${this.styles.contact}`)!;
         const contactNav = document.querySelector(".contactNav")!;
         const contactSecH2 = document.querySelector(".contactNav > h2");
         const contactNavIcon = document.querySelector(`.contactNav .${this.styles.asideNavIcons}`);
-        const contactTimeline = gsap.timeline({ defaults: { duration: .5, ease: "linear" } })
+        const contactTimeline = gsap.timeline({ defaults: { duration: .5, ease: "power1.in" } })
 
 
         contactTimeline.to(contactNavIcon,
@@ -326,6 +387,10 @@ export class HomePageAnimation {
             {
                 translateX: "10px",
                 opacity: 1,
+                onComplete: () => {
+                    asideLinks.forEach(link => link.classList.remove("active"))
+                    contactNav.classList.add("active")
+                }
             },
             "<"
         )
@@ -334,7 +399,7 @@ export class HomePageAnimation {
             ScrollTrigger.create({
                 animation: contactTimeline,
                 trigger: contactSec,
-                start: "top 90%",
+                start: "top 97%",
                 end: "bottom top",
                 // markers: true,
                 invalidateOnRefresh: true,
@@ -342,11 +407,50 @@ export class HomePageAnimation {
             })
         )
 
-        contactNav.addEventListener("click", () => {
-            gsap.to(window, { duration: 1, scrollTo: { y: "#contact", offsetY: 0 }, });
-        })
 
+    }
 
+    handleAsideAboutClick() {
+        const aboutNav = document.querySelector(`.aboutNav`)!;
+        if (aboutNav.classList.contains("active")) return;
+        gsap.to(
+            window,
+            {
+                duration: 1,
+                scrollTo: {
+                    y: 0,
+                    // offsetY: 120
+                },
+            }
+        );
+    }
+    handleAsideWorkClick() {
+        const workNav = document.querySelector(`.workNav`)!;
+        if (workNav.classList.contains("active")) return;
+        gsap.to(
+            window,
+            {
+                duration: 1,
+                scrollTo: {
+                    y: "#works",
+                    offsetY: 150
+                },
+            }
+        );
+    }
+    handleAsideContactClick() {
+        const contactNav = document.querySelector(".contactNav")!;
+        if (contactNav.classList.contains("active")) return;
+        gsap.to(
+            window,
+            {
+                duration: 1,
+                scrollTo: {
+                    y: "#contact",
+                    offsetY: 0
+                },
+            }
+        );
     }
 
     private animateContacts() {
@@ -383,15 +487,40 @@ export class HomePageAnimation {
 
 
     resizeCallback() {
+        window.innerWidth < 768 ? this.isMobileScreen = true : this.isMobileScreen = false;
         this.asideNavScrollTriggerRef.forEach(ref => {
             ref.refresh()
         })
+
+        if (this.isMobileScreen) {
+            this.worksRefs.forEach(ref => ref.kill())
+            this.animateWorks();
+            gsap.to(
+                this.mouseHoverEffect.mouseHoverdiv,
+                {
+                    scale: 0,
+                }
+            )
+
+        } else if (!this.isMobileScreen) {
+            this.worksRefs.forEach(ref => ref.kill())
+            this.animateWorks();
+            gsap.to(
+                this.mouseHoverEffect.mouseHoverdiv,
+                {
+                    scale: 1,
+                }
+            )
+        }
     }
 
 
     dispose() {
+        ScrollTrigger.removeEventListener("refresh", this.updateLocomotiveScroll);
         ScrollTrigger.killAll();
-        this.loopLegendElRef.kill()
         this.webglExperience.dispose()
+
+        window.removeEventListener("resize", this.resizeCallback)
+        this.mouseHoverEffect.dispose()
     }
 }

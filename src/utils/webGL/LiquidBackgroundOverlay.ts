@@ -120,7 +120,7 @@ export default class LiquidBackgroundOverlay {
         this.waterMesh = new THREE.Mesh(geometry, this.waterMaterial);
         this.waterMesh.rotation.x = -Math.PI * 0.165;
         // this.waterMesh.rotation.x = -Math.PI * 0.365;
-        this.waterMesh.scale.set(2.6, 1.5, 1)
+        this.waterMesh.scale.set(3, 1.5, 1)
         // this.waterMesh.scale.set(4.5, 2.6, 1)
 
         this.waterMesh.matrixAutoUpdate = false;

@@ -45,16 +45,28 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
   )
 
   useEffect(() => {
-    const mouseHoverEffect = new MouseHoverEffect();
+    let locoScroll: LocomotiveScroll | null = null;
+    async function getLocomotive() {
+      const scrollContainer = document.body
+      const Locomotive = (await import("locomotive-scroll")).default;
+      locoScroll = new Locomotive({
+        el: scrollContainer as HTMLElement,
+        smooth: true,
+      });
 
-    animation.current = new HomePageAnimation(home, mouseHoverEffect);
 
-    animation.current.init();
-    mouseHoverEffect.init();
+
+      animation.current = new HomePageAnimation(home, locoScroll);
+
+      animation.current.init();
+
+    }
+
+    getLocomotive();
+
 
     return () => {
       animation.current?.dispose();
-      mouseHoverEffect.dispose()
     }
   }, [])
 
@@ -80,27 +92,27 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
       <div className={home.container}>
         <aside className={home.aside}>
           <nav>
-            <Link className='aboutNav' href={""} >
+            <div onClick={() => animation.current?.handleAsideAboutClick()} className='aboutNav' >
               <span className={home.asideNavIcons}>
                 <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
               </span>
 
               <h2>About</h2>
 
-            </Link>
-            <Link className='workNav' href={""} >
+            </div>
+            <div onClick={() => animation.current?.handleAsideWorkClick()} className='workNav' >
               <span className={home.asideNavIcons}>
                 <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
               </span>
               <h2>Work</h2>
 
-            </Link>
-            <Link className='contactNav' href={""}>
+            </div>
+            <div onClick={() => animation.current?.handleAsideContactClick()} className='contactNav'>
               <span className={home.asideNavIcons}>
                 <ArrowRightIcon width={44} height={44} strokeWidth={5.5} />
               </span>
               <h2>Contact</h2>
-            </Link>
+            </div>
           </nav>
           <div className={home.asideSocials}>
             <a href='https://twitter.com/BlackTiyemi' target={"_blank"} className='hoverLinks'>
@@ -163,7 +175,7 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
                 </ul>
               </div>
             </div>
-            <a href='/assets/Adeyanju-CV.pdf' download={true}>Download Full Cv</a>
+            <a href='/assets/Adeyanju-CV.pdf' download={true}>Download Full Resume</a>
           </section>
 
           <section id='works' className={home.works}>
@@ -173,7 +185,10 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
                 {
                   projects.map((project, i) => (
                     <li key={`${project.id}-${i}`}>
-                      <div className={home.projectTag} onClick={() => animation.current?.animateProjects(`${project.id}-${i}`)}>
+                      <div
+                        className={home.projectTag}
+                        onClick={() => animation.current?.animateProjects(`${project.id}-${i}`)
+                        }>
                         <p>
                           <span>{i + 1 > 9 ? `#${i + 1}` : `#0${i + 1}`}</span>
                           <span>
@@ -200,6 +215,7 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
                                 objectFit: "cover",
 
                               }}
+                              sizes="(min-width: 768px) 80vw,90vw"
                             />
                           </span>
                           <span className={home.projectContentImgOverlay}>
@@ -211,6 +227,7 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
                                 objectFit: "cover",
                                 filter: "url(#noise)"
                               }}
+                              sizes="(min-width: 768px) 33vw,100vw"
                             />
                             <svg>
                               <filter id='noise' x='0%' y='0%' width='100%' height='100%' >
@@ -234,7 +251,13 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
 
                         <p>{project.writeUp}</p>
 
-                        <p>Built with: {project.stack}</p>
+                        <p>
+                          <span style={{ backgroundColor: project.colorTheme }}>Built with:</span>
+                          <span>
+                            {project.stack}
+                          </span>
+
+                        </p>
                         <div className={home.projectContentLinks}>
                           <a href={project.links.live}>
                             <span>

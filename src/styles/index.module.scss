@@ -17,7 +17,11 @@
 .aside {
   display: none;
 
-  & nav > a {
+  & nav {
+    width: fit-content;
+  }
+
+  & nav > div {
     display: grid;
     grid-template-columns: auto auto;
     column-gap: 10px;
@@ -44,8 +48,9 @@
 
   .asideSocials {
     display: grid;
-    grid-template-columns: auto auto auto;
-    column-gap: 10px;
+    grid-template-rows: auto auto auto;
+    gap: 10px;
+    width: fit-content;
 
     & > a {
       display: grid;
@@ -54,7 +59,7 @@
       justify-content: center;
       column-gap: 5px;
       border: 4px solid;
-      padding: 10px 15px;
+      padding: 8px 15px;
       border-radius: 30px;
       position: relative;
       z-index: 1;
@@ -71,7 +76,7 @@
         width: 100%;
         height: 100%;
         z-index: -1;
-        transform: translateX(-100%);
+        transform: translateX(-110%);
 
         @include themify {
           background-color: getThemeValue("bg");
@@ -97,13 +102,16 @@
         fill: getThemeValue("text");
       }
     }
+
+    @include lg {
+      grid-template-columns: auto auto auto;
+    }
   }
 
   @include md {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    // padding-top: 10em;
+    padding: 0 $padding-web;
     position: sticky;
     top: 10em;
     height: fit-content;
@@ -112,11 +120,11 @@
 
 .main {
   padding: 0px 1.5em;
-  padding-top: 5em;
+  padding-top: $padding-mobile;
   position: relative;
 
   @include md {
-    padding: 0px 2em;
+    padding-right: $padding-web;
   }
 }
 
@@ -142,6 +150,7 @@
 
     p {
       color: $primary-text;
+      font-family: $font-secondary;
     }
 
     @include themify {
@@ -155,21 +164,26 @@
     display: block;
     text-decoration: none;
     padding: 0.5em;
+    border-radius: 0 0 10px 10px;
     text-align: center;
     cursor: pointer;
     clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    font-family: $font-secondary;
 
     @include themify {
-      background-color: getThemeValue("bg-invert");
-      color: getThemeValue("text-invert");
+      background-color: getThemeValue("border");
+      color: getThemeValue("text");
     }
   }
 
   .cvSumary {
     margin-top: 2em;
     border: 3px solid;
+    border-bottom: none;
     padding: 1em;
     overflow: hidden;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 
     .cvSummaryContent {
       position: relative;
@@ -181,6 +195,7 @@
     & p,
     & ul {
       color: $primary-text;
+      font-family: $font-secondary;
     }
 
     @include themify {
@@ -190,6 +205,7 @@
 }
 
 .works {
+  margin-top: 15em;
   .worksProjects {
     ul {
       color: $primary-text;
@@ -238,6 +254,7 @@
         > .projectContent {
           clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
           height: 0;
+          font-family: $font-secondary;
 
           .projectContentImg {
             position: relative;
@@ -269,6 +286,12 @@
 
           p:nth-of-type(2) {
             text-transform: uppercase;
+
+            span:nth-child(1) {
+              padding: 0.1em 0.5em;
+              color: white;
+              margin: 0.5em;
+            }
           }
 
           .projectContentLinks {
@@ -332,13 +355,14 @@
 }
 
 .contact {
-  margin-top: 7em;
+  margin-top: 15em;
   margin-bottom: 1em;
   text-align: center;
 
   & > p {
     color: $primary-text;
     font-size: small;
+    font-family: $font-secondary;
   }
   & > button {
     border: 3px solid;
@@ -348,6 +372,7 @@
     text-transform: capitalize;
     font-weight: 400;
     color: $primary-text;
+    font-family: $font-secondary;
 
     @include themify {
       border-color: getThemeValue("border");
@@ -369,10 +394,15 @@
 
       @include themify {
         border-color: getThemeValue("border");
+        background-color: getThemeValue("bg");
       }
     }
     @include themify {
       border-color: getThemeValue("border");
+    }
+
+    @include md {
+      display: none;
     }
   }
 
@@ -424,7 +454,11 @@
       @include themify {
         border-color: getThemeValue("border");
         fill: getThemeValue("text");
+        background-color: getThemeValue("bg");
       }
+    }
+    @include md {
+      display: none;
     }
   }
 }

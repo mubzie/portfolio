@@ -10,6 +10,7 @@ export default class MouseHoverEffect {
     mouseCoords: THREE.Vector2;
     mouseNormalizeCoords: THREE.Vector2;
     mouseHoverdiv!: HTMLDivElement;
+    mouseHoverdivWrapper!: HTMLDivElement;
     isMouseMoved: boolean;
     constructor() {
         this.isMouseMoved = false;
@@ -24,10 +25,14 @@ export default class MouseHoverEffect {
 
     init() {
         this.mouseHoverdiv = document.createElement("div");
-        this.mouseHoverdiv.style.position = "fixed";
-        this.mouseHoverdiv.style.top = "0px";
-        this.mouseHoverdiv.style.left = "0px";
-        this.mouseHoverdiv.style.zIndex = "10";
+        this.mouseHoverdivWrapper = document.createElement("div");
+        this.mouseHoverdivWrapper.style.position = "fixed";
+        this.mouseHoverdivWrapper.style.top = "0px";
+        this.mouseHoverdivWrapper.style.left = "0px";
+        this.mouseHoverdivWrapper.style.zIndex = "10";
+        this.mouseHoverdivWrapper.style.pointerEvents = "none"
+        this.mouseHoverdivWrapper.style.mixBlendMode = "difference"
+
         this.mouseHoverdiv.style.width = "50px";
         this.mouseHoverdiv.style.mixBlendMode = "difference"
         this.mouseHoverdiv.style.height = "50px";
@@ -35,8 +40,9 @@ export default class MouseHoverEffect {
         this.mouseHoverdiv.style.backgroundColor = "white"
         this.mouseHoverdiv.style.pointerEvents = "none"
 
+        this.mouseHoverdivWrapper.appendChild(this.mouseHoverdiv)
 
-        document.body.appendChild(this.mouseHoverdiv)
+        document.body.appendChild(this.mouseHoverdivWrapper)
     }
 
     followCursor(hoveringLink: boolean) {
@@ -44,7 +50,7 @@ export default class MouseHoverEffect {
         const tl = gsap.timeline()
 
         tl.to(
-            this.mouseHoverdiv,
+            this.mouseHoverdivWrapper,
             {
                 translateX: `${this.mouseCoords.x - 25}px`,
                 translateY: `${this.mouseCoords.y - 25}px`,
@@ -52,7 +58,7 @@ export default class MouseHoverEffect {
                 duration: 1
             }
         ).to(
-            this.mouseHoverdiv,
+            this.mouseHoverdivWrapper,
             {
                 scale: hoveringLink ? 0 : 1,
                 duration: 0.5
@@ -95,6 +101,6 @@ export default class MouseHoverEffect {
 
     dispose() {
         window.removeEventListener("mousemove", this.mouseMoveCallback)
-        document.body.removeChild(this.mouseHoverdiv);
+        document.body.removeChild(this.mouseHoverdivWrapper);
     }
 }

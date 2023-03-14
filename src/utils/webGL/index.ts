@@ -3,6 +3,7 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
 import gsap from "gsap"
 import LiquidBackgroundOverlay from "./LiquidBackgroundOverlay";
 import MouseHoverEffect from "../gsapAnimations/MouseHoverEffect";
+import { createDebounceFunc } from "../gsapAnimations/chunks";
 
 interface SizesType {
     width: number,
@@ -59,8 +60,8 @@ export default class WebglExperience {
         }
 
 
-        this.tick = this.tick.bind(this)
-        this.onResizeCallback = this.onResizeCallback.bind(this);
+        this.tick = this.tick.bind(this);
+        this.onResizeCallback = createDebounceFunc(this.onResizeCallback.bind(this), 300);
 
         this.tick()
         window.addEventListener("resize", this.onResizeCallback);

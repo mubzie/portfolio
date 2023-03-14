@@ -4,6 +4,7 @@
 .wrapper {
   padding: 0.5em 0;
   border-top: 1px solid;
+  font-family: $font-secondary;
 
   @include themify {
     border-color: getThemeValue("border");
@@ -11,7 +12,8 @@
 
   @include md {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    padding: 0.5em $padding-web;
     align-items: center;
   }
 }

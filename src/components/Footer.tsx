@@ -91,6 +91,7 @@ function Footer({ spotifyData }: { spotifyData: SpotifyDataProps }) {
             } catch (err: any) {
                 if (err?.statusCode === 401) {
                     console.log("Spotify Token Expired")
+                    if (intervalId) clearInterval(intervalId)
                     // spotifyApi.refreshAccessToken().then(data => {
                     //     spotifyData.accessToken = data.body.access_token
                     // }).catch(() => {
@@ -103,17 +104,18 @@ function Footer({ spotifyData }: { spotifyData: SpotifyDataProps }) {
 
         if (spotifyData?.accessToken && spotifyData?.refreshToken) {
             spotifyApi.setAccessToken(spotifyData.accessToken);
-            spotifyApi.setRefreshToken(spotifyData.refreshToken);
 
             getSpotifyPlayState()
+
+            intervalId = setInterval(getSpotifyPlayState, 7000);
 
         } else {
 
         }
 
-        intervalId = setInterval(getSpotifyPlayState, 7000);
 
-        () => clearInterval(intervalId);
+
+        return () => clearInterval(intervalId);
     }, [spotifyData])
     return (
         <div className={styles.wrapper}>

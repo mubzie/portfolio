@@ -1,3 +1,19 @@
+@font-face {
+  font-family: HelveticaNeueMediumExtended;
+  src: url("/assets/typography/Helvetica-Neue/Helvetica-Neue-Medium-Extended.ttf");
+}
+@font-face {
+  font-family: HelveticaNowText;
+  src: url("/assets/typography/Helvetica-Now-Text/HelveticaNowText-Regular.otf");
+}
+
+// Defaults
+$padding-web: 5em;
+$padding-mobile: 2em;
+$font-primary: HelveticaNeueMediumExtended;
+$font-secondary: HelveticaNowText;
+
+// Themes
 $lightMode-bg-transparent: transparent;
 $lightMode-bg: #ffffff;
 $lightMode-color: #ffffff;
