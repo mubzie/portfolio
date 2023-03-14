@@ -17,12 +17,12 @@ export class HomePageAnimation {
     mouseHoverEffect: MouseHoverEffect;
     webglExperience: WebglExperience;
     isMobileScreen: boolean = false;
-    locoScroll!: LocomotiveScroll;
+    // locoScroll!: LocomotiveScroll;
     constructor(styles: ModuleStylesType, locoScroll: LocomotiveScroll) {
         this.styles = styles;
         this.worksRefs = [];
 
-        this.locoScroll = locoScroll;
+        // this.locoScroll = locoScroll;
         this.mouseHoverEffect = new MouseHoverEffect();
         this.webglExperience = new WebglExperience(this.mouseHoverEffect);
         this.asideNavScrollTriggerRef = [];
@@ -38,7 +38,7 @@ export class HomePageAnimation {
     }
 
     init() {
-        this.setUpSmoothScrolling()
+        // this.setUpSmoothScrolling()
         this.animateAbout();
         this.animateContacts();
         this.animateAside();
@@ -47,37 +47,37 @@ export class HomePageAnimation {
 
     }
 
-    private setUpSmoothScrolling() {
+    // private setUpSmoothScrolling() {
 
-        // each time Locomotive Scroll updates, tell ScrollTrigger to update too (sync positioning)
-        this.locoScroll.on("scroll", ScrollTrigger.update);
-        const HomePageAnimation = this
-        // console.log((HomePageAnimation.locoScroll as any).scroll.instance.scroll.y)
+    //     // each time Locomotive Scroll updates, tell ScrollTrigger to update too (sync positioning)
+    //     this.locoScroll.on("scroll", ScrollTrigger.update);
+    //     const HomePageAnimation = this
+    //     // console.log((HomePageAnimation.locoScroll as any).scroll.instance.scroll.y)
 
-        // tell ScrollTrigger to use these proxy methods for the "scrollContainer" element since Locomotive Scroll is hijacking things
-        ScrollTrigger.scrollerProxy((this.locoScroll as any).el, {
-            scrollTop(value) {
-                if (arguments.length) {
+    //     // tell ScrollTrigger to use these proxy methods for the "scrollContainer" element since Locomotive Scroll is hijacking things
+    //     ScrollTrigger.scrollerProxy((this.locoScroll as any).el, {
+    //         scrollTop(value) {
+    //             if (arguments.length) {
 
-                    return HomePageAnimation.locoScroll.scrollTo(value!, { duration: 0.5 })
+    //                 return HomePageAnimation.locoScroll.scrollTo(value!, { duration: 0.5 })
 
-                } else {
-                    return (HomePageAnimation.locoScroll as any).scroll.instance.scroll.y
-                }
-            }, // we don't have to define a scrollLeft because we're only scrolling vertically.
-            getBoundingClientRect() {
-                return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
-            },
-            // LocomotiveScroll handles things completely differently on mobile devices - it doesn't even transform the container at all! So to get the correct behavior and avoid jitters, we should pin things with position: fixed on mobile. We sense it by checking to see if there's a transform applied to the container (the LocomotiveScroll-controlled element).
-            pinType: (this.locoScroll as any).el.style.transform ? "transform" : "fixed"
-        }
-        )
-        ScrollTrigger.addEventListener("refresh", this.updateLocomotiveScroll);
-        ScrollTrigger.defaults({ scroller: (this.locoScroll as any).el });
+    //             } else {
+    //                 return (HomePageAnimation.locoScroll as any).scroll.instance.scroll.y
+    //             }
+    //         }, // we don't have to define a scrollLeft because we're only scrolling vertically.
+    //         getBoundingClientRect() {
+    //             return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+    //         },
+    //         // LocomotiveScroll handles things completely differently on mobile devices - it doesn't even transform the container at all! So to get the correct behavior and avoid jitters, we should pin things with position: fixed on mobile. We sense it by checking to see if there's a transform applied to the container (the LocomotiveScroll-controlled element).
+    //         pinType: (this.locoScroll as any).el.style.transform ? "transform" : "fixed"
+    //     }
+    //     )
+    //     ScrollTrigger.addEventListener("refresh", this.updateLocomotiveScroll);
+    //     ScrollTrigger.defaults({ scroller: (this.locoScroll as any).el });
 
-    }
+    // }
     updateLocomotiveScroll() {
-        this.locoScroll.update()
+        // this.locoScroll.update()
     }
     private animateWorks() {
 

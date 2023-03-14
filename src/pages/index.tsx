@@ -48,15 +48,15 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
     let locoScroll: LocomotiveScroll | null = null;
     async function getLocomotive() {
       const scrollContainer = document.body
-      const Locomotive = (await import("locomotive-scroll")).default;
-      locoScroll = new Locomotive({
-        el: scrollContainer as HTMLElement,
-        smooth: true,
-      });
+      // const Locomotive = (await import("locomotive-scroll")).default;
+      // locoScroll = new Locomotive({
+      //   el: scrollContainer as HTMLElement,
+      //   smooth: true,
+      // });
 
 
 
-      animation.current = new HomePageAnimation(home, locoScroll);
+      animation.current = new HomePageAnimation(home, locoScroll!);
 
       animation.current.init();
 
