@@ -135,7 +135,12 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
             <fieldset role={"presentation"}>
               <legend>About Me</legend>
               <p>
-                {`Hi there, i'm Adeyanju Adeyemi a frontend developer currently based in Lagos Nigeria`}
+                {`Hi there, i'm Adeyanju Adeyemi a frontend developer currently based in Lagos Nigeria with up to 2 year experience creating performant FrontEnd Web appplication for the broswer.`}
+              </p>
+              <p>
+                {`
+              i'm of the idea that everything can be optimized while writing scalable, clean and readable code. Peek into my resume and i'm sure you will find what you are looking for
+              `}
               </p>
             </fieldset>
 
@@ -147,7 +152,7 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
               <div className={home.cvSummaryContent}>
                 <h2 className={home.cvSumary_header}>Language, Stacks and Frameworks</h2>
                 <p>
-                  English, ...Oops sorry. Html, Css, JavaScript, TypeScript, ReactJs, NextJs, Redux, Scss, Tailwind Css, ThreeJs, WebGL
+                  Html, Css, JavaScript, TypeScript, ReactJs, NextJs, Redux, Scss, Tailwind Css, ThreeJs, WebGL
                 </p>
               </div>
               <div className={home.cvSummaryContent}>
