@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react'
 import styles from '@/styles/Header.module.scss'
 import { useAppTheme } from './AppThemeProvider'
 import HeaderAnimations from '@/utils/gsapAnimations/Header';
+import gsap from "gsap"
+import { createDebounceFunc } from '@/utils/gsapAnimations/chunks';
 
 
 function Header() {
@@ -16,23 +18,54 @@ function Header() {
         return () => animation.current?.dispose()
     }, [])
     useEffect(() => {
-        const scrollCallBack = (e: Event) => {
+
+        let previousScrollY = Math.floor(window.scrollY);
+        let scrollCallBack = (e: Event) => {
             const headerWrapper = document.querySelector(`.${styles.wrapper}`)!;
-            if (Math.floor(window.scrollY) > 50) {
-                headerWrapper.classList.add(styles.active);
-            } else {
-                headerWrapper.classList.remove(styles.active);
+            let currentScrollY = Math.floor(window.scrollY);
+            console.log(currentScrollY);
+            console.log(previousScrollY)
+            const hideHeader = () => {
+                gsap.to(
+                    headerWrapper, {
+                    translateY: "-100px",
+                    duration: 0.3
+                }
+                )
             }
+            const showHeader = () => {
+                gsap.to(
+                    headerWrapper, {
+                    translateY: "0px",
+                    duration: 0.3,
+                    onComplete: () => {
+                        currentScrollY = Math.floor(window.scrollY);
+                        if (currentScrollY > 50) {
+                            setTimeout(hideHeader, 4000)
+                        }
+                    }
+                }
+                )
+            }
+            if (previousScrollY > currentScrollY || currentScrollY < 50) {
+                showHeader()
+            } else {
+                hideHeader()
+            }
+            previousScrollY = currentScrollY;
         }
+
+        scrollCallBack = createDebounceFunc(scrollCallBack, 250);
+
 
         window.addEventListener("scroll", scrollCallBack);
 
         return () => window.removeEventListener("scroll", scrollCallBack);
-    }, [])
+    }, [isDarkMode])
 
 
     return (
-        <div className={`${styles.wrapper} ${isDarkMode ? "theme-default" : "theme-light"} active `}>
+        <div className={`${styles.wrapper} ${isDarkMode ? "theme-default" : "theme-light"} `}>
             <div className={styles.logo}>
                 <span>Ye</span>
                 <span></span>

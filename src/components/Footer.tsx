@@ -22,11 +22,11 @@ function Footer({ spotifyData }: { spotifyData: SpotifyDataProps }) {
         const audioEl = document.getElementById("spotifyAudioPreview") as HTMLAudioElement;
         if (type === "enter") {
             if (hasUserInteractedWithDom) {
-                audioEl.play().catch(err => console.log(err))
+                audioEl?.play().catch(err => console.log(err))
             }
 
         } else {
-            audioEl.pause()
+            audioEl?.pause()
         }
 
     }
@@ -118,7 +118,7 @@ function Footer({ spotifyData }: { spotifyData: SpotifyDataProps }) {
         return () => clearInterval(intervalId);
     }, [spotifyData])
     return (
-        <div className={styles.wrapper}>
+        <div data-scroll-section className={styles.wrapper}>
             <div className={`${styles.spotify} ${spotifyPlayState ? styles.spotifyActive : ""}`}>
                 <a
                     target={"_blank"}

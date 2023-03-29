@@ -49,7 +49,7 @@ html {
     z-index: 5;
     transform-origin: center bottom;
     mix-blend-mode: difference;
-    pointer-events: none;
+    pointer-events: none !important;
     transform: scaleY(1.5);
     overflow: clip;
 

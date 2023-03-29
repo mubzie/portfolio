@@ -19,6 +19,7 @@ export default class MouseHoverEffect {
 
         this.mouseMoveCallback = this.mouseMoveCallback.bind(this);
 
+
         window.addEventListener("mousemove", this.mouseMoveCallback)
 
     }
@@ -68,6 +69,24 @@ export default class MouseHoverEffect {
 
     }
 
+    toggleVisibility(type: "show" | "hide") {
+        if (type === "show") {
+            gsap.to(
+                this.mouseHoverdiv,
+                {
+                    scale: 1,
+                }
+            )
+        } else {
+            gsap.to(
+                this.mouseHoverdiv,
+                {
+                    scale: 0,
+                }
+            )
+        }
+    }
+
     mouseMoveCallback(e: MouseEvent) {
         const child = document.elementFromPoint(this.mouseCoords.x, this.mouseCoords.y);
 
@@ -100,6 +119,7 @@ export default class MouseHoverEffect {
     }
 
     dispose() {
+        // console.log("mouse hover effect removed")
         window.removeEventListener("mousemove", this.mouseMoveCallback)
         document.body.removeChild(this.mouseHoverdivWrapper);
     }

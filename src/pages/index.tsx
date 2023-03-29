@@ -7,13 +7,14 @@ import LinkedInIcon from '@/components/icons/LinkedInIcon'
 import GithubIcon from '@/components/icons/GithubIcon'
 import { MouseEvent, useEffect, useRef, useState } from 'react'
 import { HomePageAnimation } from '@/utils/gsapAnimations/HomePage'
-import MouseHoverEffect from '@/utils/gsapAnimations/MouseHoverEffect'
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon'
-import Link from 'next/link'
 import projects from "@/projects"
 import Image from 'next/image'
 import SpotifyWebApi from "spotify-web-api-node";
 import { useAppTheme } from '@/components/AppThemeProvider'
+import gsap from "gsap"
+import useLocomotiveScroll from '@/components/useLocoMotiveScroll'
+
 
 export interface SpotifyDataProps {
   accessToken: string | null,
@@ -26,12 +27,9 @@ export interface SpotifyDataProps {
 
 
 export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps }) {
-
   const [isDarkMode] = useAppTheme();
-
-
-
   const animation = useRef<HomePageAnimation | null>(null);
+  // const locoScroll = useLocomotiveScroll()
 
   const RotatedArrowIcon = () => (
     <svg
@@ -44,29 +42,24 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
     </svg>
   )
 
+
+
   useEffect(() => {
-    let locoScroll: LocomotiveScroll | null = null;
-    async function getLocomotive() {
-      const scrollContainer = document.body
-      // const Locomotive = (await import("locomotive-scroll")).default;
-      // locoScroll = new Locomotive({
-      //   el: scrollContainer as HTMLElement,
-      //   smooth: true,
-      // });
 
-
-
-      animation.current = new HomePageAnimation(home, locoScroll!);
-
-      animation.current.init();
-
-    }
-
-    getLocomotive();
-
+    // if (locoScroll) {
+    animation.current = new HomePageAnimation(home);
+    animation.current.init()
+    // locoScroll.destroy()
+    // }
 
     return () => {
-      animation.current?.dispose();
+      // if (locoScroll) {
+      //   locoScroll.destroy()
+      // }
+      if (animation.current) {
+        animation.current?.dispose();
+      }
+
     }
   }, [])
 
@@ -134,8 +127,8 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
 
         </aside>
         <main className={home.main}>
-          <section id='about' className={home.about}>
-            <h1>
+          <section data-scroll-section id='about' className={home.about}>
+            <h1 data-scroll data-scroll-speed="2">
               bringing ideas to life
               with frontend technology
             </h1>
@@ -178,8 +171,8 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
             <a href='/assets/Adeyanju-CV.pdf' download={true}>Download Full Resume</a>
           </section>
 
-          <section id='works' className={home.works}>
-            <h2>{`Still Have  Doubts ?, Check out Projects I've Built And Worked On`}</h2>
+          <section data-scroll-section id='works' className={home.works}>
+            <h2 data-scroll data-scroll-speed="1">{`Still Have  Doubts ?, Check out Projects I've Built And Worked On`}</h2>
             <div className={home.worksProjects}>
               <ul>
                 {
@@ -187,7 +180,7 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
                     <li key={`${project.id}-${i}`}>
                       <div
                         className={home.projectTag}
-                        onClick={() => animation.current?.animateProjects(`${project.id}-${i}`)
+                        onClick={() => animation.current?.animateProjects(`${project.id}-${i}`, i)
                         }>
                         <p>
                           <span>{i + 1 > 9 ? `#${i + 1}` : `#0${i + 1}`}</span>
@@ -203,8 +196,8 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
                       <div id={`${project.id}-${i}`} className={`${home.projectContent} `}>
                         <div
                           className={`${home.projectContentImg} hoverLinks`}
-                          onMouseEnter={(e) => animation.current?.animateProjectImgOnHover(e.currentTarget, "enter")}
-                          onMouseLeave={(e) => animation.current?.animateProjectImgOnHover(e.currentTarget, "leave")}
+                          onMouseEnter={(e) => animation.current?.animateProjectImgOnHover(e.currentTarget, "enter", i)}
+                          onMouseLeave={(e) => animation.current?.animateProjectImgOnHover(e.currentTarget, "leave", i)}
                         >
                           <span>
                             <Image
@@ -225,24 +218,26 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
                               fill={true}
                               style={{
                                 objectFit: "cover",
-                                filter: "url(#noise)"
+                                filter: `url(#noise-${i})`
                               }}
                               sizes="(min-width: 768px) 33vw,100vw"
                             />
                             <svg>
-                              <filter id='noise' x='0%' y='0%' width='100%' height='100%' >
+                              <filter id={`noise-${i}`} x='0%' y='0%' width='100%' height='100%' >
                                 {/* <feTurbulence baseFrequency='0.05 0.07' result='NOISE' numOctaves={0.5} id='image-turbulence' /> */}
                                 <feTurbulence
                                   baseFrequency='0.05 0.07'
                                   result='NOISE'
                                   numOctaves={1}
                                   id='image-turbulence'
+                                  className={`image-turbulence-${i}`}
                                 />
                                 <feDisplacementMap
                                   in='SourceGraphic'
                                   in2='NOISE'
                                   scale={50}
                                   id='image-displacement'
+                                  className={`image-displacement-${i}`}
                                 />
                               </filter>
                             </svg>
@@ -304,7 +299,7 @@ export default function Home({ spotifyData }: { spotifyData: SpotifyDataProps })
             </div>
           </section>
 
-          <section id='contact' className={home.contact}>
+          <section data-scroll-section id='contact' className={home.contact}>
             <h2>
               You should drop by
             </h2>

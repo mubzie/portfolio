@@ -19,6 +19,7 @@
 
   & nav {
     width: fit-content;
+    margin-bottom: 5em;
   }
 
   & nav > div {
@@ -206,6 +207,9 @@
 
 .works {
   margin-top: 15em;
+  h2 {
+    margin-bottom: 4em;
+  }
   .worksProjects {
     ul {
       color: $primary-text;

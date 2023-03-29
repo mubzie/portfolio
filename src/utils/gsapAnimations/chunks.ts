@@ -69,16 +69,13 @@ export function createDebounceFunc(cb: Function, delay: number) {
     return function () {
         if (timeoutRef) {
             clearTimeout(timeoutRef);
-
-            timeoutRef = setTimeout(() => {
-                cb()
-                clearTimeout(timeoutRef!);
-                timeoutRef = null
-            }, delay)
-
-        } else {
-            timeoutRef = setTimeout(() => cb(), delay)
         }
+
+        timeoutRef = setTimeout(() => {
+            cb()
+            clearTimeout(timeoutRef!);
+            timeoutRef = null
+        }, delay)
 
 
 
