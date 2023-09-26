@@ -67,9 +67,9 @@ function Header() {
     return (
         <div className={`${styles.wrapper} ${isDarkMode ? "theme-default" : "theme-light"} `}>
             <div className={styles.logo}>
-                <span>Ye</span>
+                <span>Mub</span>
                 <span></span>
-                <span>Mi.</span>
+                <span>zie.</span>
             </div>
             <div
                 onClick={() => {
